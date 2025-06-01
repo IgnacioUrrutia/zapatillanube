@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gengar Market - Zapatillas de Alta Performance</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/animations.css">
+  <link rel="stylesheet" href="css/cart.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+</head>
+<body>
+  <header>
+    <nav class="navbar">
+      <div class="navbar-brand">Gengar Market</div>
+      <ul class="navbar-nav">
+        <li><a href="index.html">Inicio</a></li>
+        <li><a href="productos.html">Productos</a></li>
+        <li><a href="productos.html">Colección</a></li>
+        <li><a href="#contacto">Contacto</a></li>
+        <li>
+          <a href="#" id="carrito-nav" class="nav-link">
+            <i class="fas fa-shopping-cart"></i>
+            <span id="contador-carrito" class="contador-carrito">0</span>
+          </a>
+        </li>
+      </ul>
+    </nav>
+  </header>
+
+  <aside id="boleta-container" class="boleta-container" style="display: none;">
+    <div class="boleta">
+      <h2>Gracias por tu compra</h2>
+      <div id="boleta-items"></div>
+      <div id="boleta-total" class="boleta-total"></div>
+    </div>
+  </aside>
+
+  <aside id="carrito-modal" class="carrito-modal">
+    <div class="carrito-container">
+      <div class="carrito-header">
+        <h3><i class="fas fa-shopping-cart"></i> Tu Carrito</h3>
+        <button id="cerrar-carrito" class="btn-cerrar">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      <div id="carrito-items">
+        <div class="carrito-vacio">Tu carrito está vacío</div>
+      </div>
+      <div class="carrito-footer">
+        <div class="carrito-subtotal">
+          <span class="carrito-subtotal-texto">Subtotal:</span>
+          <span id="subtotal-carrito" class="carrito-subtotal-valor">$0.00</span>
+        </div>
+        <div class="carrito-botones">
+          <button id="vaciar-carrito" class="btn-carrito btn-vaciar">Vaciar</button>
+          <button id="checkout-carrito" class="btn-carrito btn-checkout">Finalizar Compra</button>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <main>
+    <section class="hero">
+      <div class="hero-content">
+        <h1>Gengar Market</h1>
+        <p>Tecnología de punta para los amantes del deporte. Máxima comodidad y rendimiento.</p>
+        <a href="productos.html" class="cta-button">Ver Productos</a>
+      </div>
+      <div class="hero-image">
+        <img src="assets/img/shoe-hero.png" alt="Zapatilla SportyStep" class="hero-shoe">
+      </div>
+    </section>
+
+    <section class="productos">
+      <h2>Destacados</h2>
+      <div class="grid-productos">
+        <article class="producto">
+          <img src="assets/img/shoe1.png" alt="Zapatilla 1" class="producto-imagen">
+          <h3>RunMax Pro</h3>
+          <p class="producto-precio">$129.99</p>
+          <a href="productos.html" class="btn-comprar">Ver Más</a>
+          <button class="btn-agregar-carrito" 
+                  data-id="1" 
+                  data-nombre="RunMax Pro" 
+                  data-precio="129.99" 
+                  data-imagen="assets/img/shoe1.png"></button>
+        </article>
+
+        <article class="producto">
+          <img src="assets/img/shoe2.png" alt="Zapatilla 2" class="producto-imagen">
+          <h3>Urban Flex</h3>
+          <p class="producto-precio">$99.99</p>
+          <a href="productos.html" class="btn-comprar">Ver Más</a>
+          <button class="btn-agregar-carrito" 
+                  data-id="2" 
+                  data-nombre="Urban Flex" 
+                  data-precio="99.99" 
+                  data-imagen="assets/img/shoe2.png"></button>
+        </article>
+
+        <article class="producto">
+          <img src="assets/img/shoe3.png" alt="Zapatilla 3" class="producto-imagen">
+          <h3>TrailMaster</h3>
+          <p class="producto-precio">$149.99</p>
+          <a href="productos.html" class="btn-comprar">Ver Más</a>
+          <button class="btn-agregar-carrito" 
+                  data-id="3" 
+                  data-nombre="TrailMaster" 
+                  data-precio="149.99" 
+                  data-imagen="assets/img/shoe3.png"></button>
+        </article>
+      </div>
+    </section>
+  </main>
+  <footer id="contacto" style="background:#111; color:#fff; text-align:center; padding:1rem 0; font-size:0.9rem;">
+    <p>&copy; 2024 Gengar Market. Todos los derechos reservados.</p>
+    <div style="margin-top: 0.5rem;">
+      <a href="https://wa.me/1234567890" target="_blank" style="color:#25D366; margin: 0 0.5rem; font-size:1.2rem;">
+        <i class="fab fa-whatsapp"></i>
+      </a>
+      <a href="https://www.instagram.com/gengar.market/" target="_blank" style="color:#E1306C; margin: 0 0.5rem; font-size:1.2rem;">
+        <i class="fab fa-instagram"></i>
+      </a>
+    </div>
+  </footer>
+  
+  
+
+  <div id="carrito-overlay" class="carrito-overlay"></div>
+
+  <script src="js/main.js"></script>
+  <script src="js/cart.js"></script>
+  <script src="js/auth.js"></script>
+</body>
+</html>
