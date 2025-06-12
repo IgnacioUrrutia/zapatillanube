@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gengar Market - Confirmación de Compra</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/animations.css">
+  <link rel="stylesheet" href="css/pantallacompra.css">
+  <link rel="stylesheet" href="css/cart.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+  <header>
+    <nav class="navbar">
+      <div class="navbar-brand">Gengar Market</div>
+      <ul class="navbar-nav">
+        <li><a href="index.html">Inicio</a></li>
+        <li><a href="productos.html">Productos</a></li>
+        <li><a href="productos.html">Colección</a></li>
+        <li><a href="#contacto">Contacto</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main>
+    <section class="compra-container">
+      <h1>¡Gracias por tu compra!</h1>
+      <p>Hola <span id="nombre-cliente">Estimado/a cliente</span>, tu pedido ha sido recibido correctamente.</p>
+
+      <div class="compra-detalle" id="detalle-compra">
+        <p>Cargando detalles de la compra...</p>
+      </div>
+
+      <div class="compra-total" id="total-compra">Total: $0</div>
+      
+      <div class="metodo-pago" id="metodo-pago" style="margin-top: 15px; font-weight: bold;"></div>
+
+      <a href="productos.html" class="volver-btn" onclick="window.limpiarCompra()">Seguir Comprando</a>
+      <button class="finalizar-btn" onclick="window.descargarBoleta()">Finalizar y Descargar Boleta</button>
+    </section>
+  </main>
+
+  <footer id="contacto" style="background:#111; color:#fff; text-align:center; padding:1rem 0; font-size:0.9rem;">
+    <p>&copy; 2024 Gengar Market. Todos los derechos reservados.</p>
+    <div style="margin-top: 0.5rem;">
+      <a href="https://wa.me/1234567890" target="_blank" style="color:#25D366; margin: 0 0.5rem; font-size:1.2rem;">
+        <i class="fab fa-whatsapp"></i>
+      </a>
+      <a href="https://www.instagram.com/gengar.market/" target="_blank" style="color:#E1306C; margin: 0 0.5rem; font-size:1.2rem;">
+        <i class="fab fa-instagram"></i>
+      </a>
+    </div>
+  </footer>
+
+  <script type="module" src="js/pantallacompra.js"></script>
+  <script type="module" src="js/auth.js"></script>
+  <script type="module" src="js/admin-button.js"></script>
+</body>
+</html>
