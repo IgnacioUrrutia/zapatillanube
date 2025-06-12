@@ -18,13 +18,7 @@
         <li><a href="index.html">Inicio</a></li>
         <li><a href="productos.html">Productos</a></li>
         <li><a href="productos.html">Colección</a></li>
-        <li><a href="https://www.instagram.com/gengar.market/" target="_blank">Contacto</a></li>
-        <li>
-          <a href="#" id="carrito-nav" class="nav-link">
-            <i class="fas fa-shopping-cart"></i>
-            <span id="contador-carrito" class="contador-carrito">0</span>
-          </a>
-        </li>
+        <li><a href="#contacto">Contacto</a></li>
       </ul>
     </nav>
   </header>
@@ -32,60 +26,35 @@
   <main>
     <section class="compra-container">
       <h1>¡Gracias por tu compra!</h1>
-      <p>Tu pedido ha sido recibido correctamente.</p>
+      <p>Hola <span id="nombre-cliente">Estimado/a cliente</span>, tu pedido ha sido recibido correctamente.</p>
 
       <div class="compra-detalle" id="detalle-compra">
-        <!-- Aquí se insertarán los productos -->
+        <p>Cargando detalles de la compra...</p>
       </div>
 
       <div class="compra-total" id="total-compra">Total: $0</div>
+      
+      <div class="metodo-pago" id="metodo-pago" style="margin-top: 15px; font-weight: bold;"></div>
 
-      <a href="productos.html" class="volver-btn" onclick="limpiarCompra()">Seguir Comprando</a>
-      <button class="finalizar-btn" onclick="descargarBoleta()">Finalizar y Descargar Boleta</button>
+      <a href="productos.html" class="volver-btn" onclick="window.limpiarCompra()">Seguir Comprando</a>
+      <button class="finalizar-btn" onclick="window.descargarBoleta()">Finalizar y Descargar Boleta</button>
     </section>
   </main>
 
-  <footer style="background:#111; color:#fff; text-align:center; padding:1rem 0; font-size:0.9rem;">
+  <footer id="contacto" style="background:#111; color:#fff; text-align:center; padding:1rem 0; font-size:0.9rem;">
     <p>&copy; 2024 Gengar Market. Todos los derechos reservados.</p>
+    <div style="margin-top: 0.5rem;">
+      <a href="https://wa.me/1234567890" target="_blank" style="color:#25D366; margin: 0 0.5rem; font-size:1.2rem;">
+        <i class="fab fa-whatsapp"></i>
+      </a>
+      <a href="https://www.instagram.com/gengar.market/" target="_blank" style="color:#E1306C; margin: 0 0.5rem; font-size:1.2rem;">
+        <i class="fab fa-instagram"></i>
+      </a>
+    </div>
   </footer>
 
-  <script>
-    const productosComprados = JSON.parse(localStorage.getItem('gengarUltimaCompra')) || [];
-    const contenedor = document.getElementById('detalle-compra');
-    const totalCompra = document.getElementById('total-compra');
-
-    let total = 0;
-    let htmlBoleta = '<h2>Boleta de Compra</h2><ul>';
-
-    productosComprados.forEach(prod => {
-      const linea = document.createElement('p');
-      const texto = `${prod.nombre} x${prod.cantidad} - $${(prod.precio * prod.cantidad).toFixed(0)}`;
-      linea.textContent = texto;
-      contenedor.appendChild(linea);
-      total += prod.precio * prod.cantidad;
-      htmlBoleta += `<li>${texto}</li>`;
-    });
-
-    htmlBoleta += `</ul><strong>Total: $${total.toFixed(0)}</strong>`;
-    totalCompra.textContent = `Total: $${total.toFixed(0)}`;
-
-    function descargarBoleta() {
-      const blob = new Blob([htmlBoleta], { type: 'text/html' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = 'boleta_gengar.html';
-      a.click();
-      URL.revokeObjectURL(url);
-      limpiarCompra();
-    }
-
-    function limpiarCompra() {
-      localStorage.removeItem('gengarUltimaCompra');
-    }
-  </script>
-  <script src="js/auth.js"></script>
-
+  <script type="module" src="js/pantallacompra.js"></script>
+  <script type="module" src="js/auth.js"></script>
+  <script type="module" src="js/admin-button.js"></script>
 </body>
-
 </html>

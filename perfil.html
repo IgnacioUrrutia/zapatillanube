@@ -5,34 +5,53 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Mi Perfil - Gengar Market</title>
   <link rel="stylesheet" href="css/styles.css">
-  <link rel="stylesheet" href="css/login.css">
+  <link rel="stylesheet" href="css/login.css"> 
 </head>
-<body>
-  <main class="auth-wrapper">
-    <section class="auth-form" style="align-items: center; text-align: center;">
+ <body>
+  <header>
+    <nav class="navbar">
+      <div class="navbar-brand">Gengar Market</div>
+      <ul class="navbar-nav">
+        <li><a href="index.html">Inicio</a></li>
+        <li><a href="productos.html">Productos</a></li>
+        <li><a href="productos.html">Colección</a></li>
+        <li><a href="#contacto">Contacto</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main class="auth-wrapper perfil-container" style="margin-top: 100px;">
+    <section class="auth-form" style="align-items: center; text-align: center; width: 100%;">
       <img src="assets/img/logo.png" alt="Avatar de usuario" style="width:100px; height:100px; border-radius:50%; margin-bottom:1rem;">
       <h1>👋 Bienvenido a tu Perfil</h1>
-      <p><strong>Correo:</strong> <span id="perfilCorreo"></span></p>
-      $1
+      
+      <div class="info-usuario">
+        <p><strong>Nombre:</strong> <span id="perfilNombre">Cargando...</span></p>
+        <p><strong>Correo:</strong> <span id="perfilCorreo">Cargando...</span></p>
+      </div>
+      
+      <button id="logout" class="btn-logout">Cerrar Sesión</button>
+      
+      <div id="historialCompras">
+        <h3>Cargando historial de compras...</h3>
+      </div>
+      
       <a href="index.html" class="volver-btn" style="margin-top: 1rem; display: inline-block; text-decoration: none; color: #111; font-weight: bold;">⬅️ Volver al inicio</a>
     </section>
   </main>
+ </body>
+ <footer style="background:#111; color:#fff; text-align:center; padding:1rem 0; font-size:0.9rem; margin-top: 2rem;">
+    <p>&copy; 2024 Gengar Market. Todos los derechos reservados.</p>
+    <div style="margin-top: 0.5rem;">
+      <a href="https://wa.me/1234567890" target="_blank" style="color:#25D366; margin: 0 0.5rem; font-size:1.2rem;">
+        <i class="fab fa-whatsapp"></i>
+      </a>
+      <a href="https://www.instagram.com/gengar.market/" target="_blank" style="color:#E1306C; margin: 0 0.5rem; font-size:1.2rem;">
+        <i class="fab fa-instagram"></i>
+      </a>
+    </div>
+ </footer>
 
-  <script>
-    const correo = localStorage.getItem("usuarioLogueado");
-    const spanCorreo = document.getElementById("perfilCorreo");
-    const logout = document.getElementById("logout");
-
-    if (!correo) {
-      window.location.href = "login-register.html";
-    } else {
-      spanCorreo.textContent = correo;
-    }
-
-    logout.addEventListener("click", () => {
-      localStorage.removeItem("usuarioLogueado");
-      window.location.href = "index.html";
-    });
-  </script>
-</body>
+  <script type="module" src="js/perfil.js"></script>
+  <script type="module" src="js/auth.js"></script>
 </html>

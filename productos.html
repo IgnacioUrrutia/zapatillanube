@@ -56,7 +56,9 @@
   <main>
     <section class="productos" style="margin-top: 80px;">
       <h2>Nuestro Catálogo Completo</h2>
-      <div id="loader" class="loader"></div>
+      <div id="loader" class="loader" style="display: block; text-align: center; margin: 20px auto;">
+        <i class="fas fa-spinner fa-spin fa-2x"></i>
+      </div>
       <div id="error-container" class="error-message"></div>
 
       <div style="margin: 1rem 0; text-align: right;">
@@ -78,10 +80,11 @@
   <div id="carrito-overlay" class="carrito-overlay"></div>
 
 
-  <script src="js/main.js"></script>
-  <script src="js/productos.js"></script>
-  <script src="js/cart.js"></script>
-  <script src="js/auth.js"></script>
+  <script type="module" src="js/main.js"></script>
+  <script type="module" src="js/productos.js"></script>
+  <script type="module" src="js/cart.js"></script>
+  <script type="module" src="js/auth.js"></script>
+  <script type="module" src="js/admin-button.js"></script>
 
 </body>
 <footer id="contacto" style="background:#111; color:#fff; text-align:center; padding:1rem 0; font-size:0.9rem;">

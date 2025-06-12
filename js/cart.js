@@ -1,9 +1,17 @@
-// cart.js actualizado para redirigir a pantallacompra.html
+// cart.js actualizado para usar Firebase y redirigir a la página de pago
+import { auth, onAuthStateChanged } from "./firebase-config.js";
+import { db, collection, addDoc } from "./firebase-config.js";
 
 let carritoItems = JSON.parse(localStorage.getItem('gengarMarketCart')) || [];
 let subtotal = 0;
+let currentUser = null;
 
 document.addEventListener('DOMContentLoaded', () => {
+    // Verificar estado de autenticación
+    onAuthStateChanged(auth, (user) => {
+        currentUser = user;
+    });
+
     actualizarCarritoUI();
 
     const btnCarritoNav = document.getElementById('carrito-nav');
@@ -120,9 +128,14 @@ function actualizarCarritoUI() {
         });
     }
 
-    contadorCarrito.textContent = totalItems;
-    contadorCarrito.style.display = totalItems > 0 ? 'flex' : 'none';
-    subtotalElement.textContent = `$${subtotal.toFixed(0)}`;
+    if (contadorCarrito) {
+        contadorCarrito.textContent = totalItems;
+        contadorCarrito.style.display = totalItems > 0 ? 'flex' : 'none';
+    }
+    
+    if (subtotalElement) {
+        subtotalElement.textContent = `$${subtotal.toFixed(0)}`;
+    }
 
     document.querySelectorAll('.btn-aumentar').forEach(btn => btn.addEventListener('click', e => modificarCantidad(e.currentTarget.getAttribute('data-id'), 'aumentar')));
     document.querySelectorAll('.btn-disminuir').forEach(btn => btn.addEventListener('click', e => modificarCantidad(e.currentTarget.getAttribute('data-id'), 'disminuir')));
@@ -130,6 +143,7 @@ function actualizarCarritoUI() {
 }
 
 function mostrarNotificacion(mensaje) {
+    // Se podría implementar una notificación más elegante
     alert(mensaje);
 }
 
@@ -139,21 +153,26 @@ function procesarCheckout() {
         return;
     }
 
-    localStorage.setItem('gengarUltimaCompra', JSON.stringify(carritoItems));
-    carritoItems = [];
-    guardarCarrito();
-    actualizarCarritoUI();
+    // Verificar si el usuario está autenticado
+    if (!currentUser) {
+        if (confirm('Necesitas iniciar sesión para completar la compra. ¿Deseas ir a la página de inicio de sesión?')) {
+            window.location.href = 'login-register.html';
+        }
+        return;
+    }
 
-    // Animación de cierre del carrito antes de redirigir
+    // Cerrar el modal del carrito
     const carritoModal = document.getElementById('carrito-modal');
     const carritoOverlay = document.getElementById('carrito-overlay');
-    carritoModal.classList.remove('activo');
-    carritoOverlay.classList.remove('activo');
+    
+    if (carritoModal) carritoModal.classList.remove('activo');
+    if (carritoOverlay) carritoOverlay.classList.remove('activo');
 
-    setTimeout(() => {
-        window.location.href = 'pantallacompra.html';
-    }, 500); // Espera 0.5s para permitir que la animación visual termine
+    // Redirigir a la página de opciones de pago
+    window.location.href = 'pago-options.html';
 }
 
-
+// Exportar funciones para uso global
 window.carritoFunctions = { agregarAlCarrito };
+
+export { agregarAlCarrito, carritoItems };

@@ -1,4 +1,5 @@
-// productos.js adaptado para cargar productos locales con imágenes personalizadas y filtro
+// productos.js - Gestión de productos con Firebase
+import { db, collection, getDocs, orderBy, query } from "./firebase-config.js";
 
 document.addEventListener('DOMContentLoaded', () => {
     const gridProductos = document.getElementById('grid-productos');
@@ -17,134 +18,104 @@ document.addEventListener('DOMContentLoaded', () => {
         const productoDiv = document.createElement('div');
         productoDiv.classList.add('producto');
 
-        const imagenUrl = producto.images && producto.images[0]
-            ? producto.images[0]
+        const imagenUrl = producto.imagenes && producto.imagenes.length > 0
+            ? producto.imagenes[0]
             : 'https://via.placeholder.com/600x400?text=Imagen+no+disponible';
 
         productoDiv.innerHTML = `
-            <img src="${imagenUrl}" alt="${producto.title}" class="producto-imagen">
-            <h3>${producto.title}</h3>
-            <p class="producto-precio">${formatearPrecio(producto.price)}</p>
-            <button class="btn-agregar-carrito" data-id="${producto.id}" data-nombre="${producto.title}" data-precio="${producto.price}" data-imagen="${imagenUrl}">
+            <img src="${imagenUrl}" alt="${producto.nombre}" class="producto-imagen">
+            <h3>${producto.nombre}</h3>
+            <p class="producto-precio">${formatearPrecio(producto.precio)}</p>
+            <button class="btn-agregar-carrito" 
+                    data-id="${producto.id}" 
+                    data-nombre="${producto.nombre}" 
+                    data-precio="${producto.precio}" 
+                    data-imagen="${imagenUrl}">
                 Añadir al Carrito
             </button>
         `;
         return productoDiv;
     }
 
-    // Guardamos los productos en esta variable global local para poder filtrarlos
-    const productosLocales = [
-        {
-            id: "1",
-            title: "AIR JORDAN 6 RETRO 'CARMINE' 2021",
-            price: 149990,
-            images: ["assets/img/shoe6.jpg"]
-        },
-        {
-            id: "2",
-            title: "NIKE SHOCKS",
-            price: 138990,
-            images: ["assets/img/shoe7.jpg"]
-        },
-        {
-            id: "3",
-            title: "AF1 NOCTA",
-            price: 189990,
-            images: ["assets/img/shoe8.jpg"]
-        },
-        {
-            id: "4",
-            title: "AIR JORDAN 6 RETRO WHITE INFRARED 23",
-            price: 119990,
-            images: ["assets/img/shoe9.jpg"]
-        },
-        {
-            id: "5",
-            title: "Jordan MVP Hombre Zapatillas",
-            price: 88990,
-            images: ["assets/img/shoe10.jpg"]
-        },
-        {
-            id: "6",
-            title: "Zapatilla Fantasma X",
-            price: 59990,
-            images: ["assets/img/shoe11.jpg"]
-        },
-        {
-            id: "7",
-            title: "AIR JORDAN 6 RETRO 'CARMINE' 2021",
-            price: 149990,
-            images: ["assets/img/shoe4.jpg"]
-        },
-        {
-            id: "8",
-            title: "NIKE SHOCKS",
-            price: 138990,
-            images: ["assets/img/shoe12.jpg"]
-        },
-        {
-            id: "9",
-            title: "NUKE SB POWERPUFF",
-            price: 189990,
-            images: ["assets/img/shoe13.jpg"]
-        },
-        {
-            id: "10",
-            title: "AIR JORDAN 6 RETRO WHITE INFRARED 23",
-            price: 119990,
-            images: ["assets/img/shoe14.jpg"]
-        },
-        {
-            id: "11",
-            title: "Jordan MVP Hombre Zapatillas",
-            price: 88990,
-            images: ["assets/img/shoe15.jpg"]
-        },
-        {
-            id: "12",
-            title: "Zapatilla Fantasma X",
-            price: 59990,
-            images: ["assets/img/shoe16.jpg"]
-        },
-        {
-            id: "13",
-            title: "Zapatilla Fantasma X",
-            price: 59990,
-            images: ["assets/img/shoe17.jpg"]
-        },
-        {
-            id: "14",
-            title: "Zapatilla Fantasma X",
-            price: 59990,
-            images: ["assets/img/shoe18.jpg"]
-        },
-        {
-            id: "15",
-            title: "Zapatilla Fantasma X",
-            price: 59990,
-            images: ["assets/img/shoe19.jpg"]
-        },
-        {
-            id: "16",
-            title: "Poleron",
-            price: 59990,
-            images: ["assets/img/polerones.jpg"]
+    // Variable para almacenar los productos cargados desde Firestore
+    let productosFirestore = [];
+
+    // Función para cargar productos desde Firestore
+    async function cargarProductosFirestore() {
+        if (loader) loader.style.display = 'block';
+        if (errorContainer) errorContainer.textContent = '';
+        
+        try {
+            // Consulta a la colección "productos" en Firestore
+            const productosRef = collection(db, "productos");
+            const q = query(productosRef, orderBy("nombre"));
+            const querySnapshot = await getDocs(q);
+            
+            productosFirestore = [];
+            querySnapshot.forEach((doc) => {
+                const productoData = doc.data();
+                productosFirestore.push({
+                    id: doc.id,
+                    nombre: productoData.nombre,
+                    precio: productoData.precio,
+                    imagenes: productoData.imagenes || [],
+                    descripcion: productoData.descripcion,
+                    categoria: productoData.categoria,
+                    stock: productoData.stock
+                });
+            });
+            
+            renderizarProductos(productosFirestore);
+        } catch (error) {
+            console.error("Error al cargar los productos desde Firestore:", error);
+            if (errorContainer) {
+                errorContainer.textContent = "Error al cargar los productos. Por favor, intenta nuevamente.";
+            }
+            // Si hay error, cargar productos locales como respaldo
+            cargarProductosLocales();
+        } finally {
+            if (loader) loader.style.display = 'none';
         }
-    ];
+    }
+
+    // Función para cargar productos locales (respaldo si falla Firestore)
+    function cargarProductosLocales() {
+        console.log("Cargando productos locales como respaldo");
+        const productosLocales = [
+            {
+                id: "1",
+                nombre: "AIR JORDAN 6 RETRO 'CARMINE' 2021",
+                precio: 149990,
+                imagenes: ["assets/img/shoe6.jpg"]
+            },
+            {
+                id: "2",
+                nombre: "NIKE SHOCKS",
+                precio: 138990,
+                imagenes: ["assets/img/shoe7.jpg"]
+            },
+            // ... resto de productos locales
+        ];
+        renderizarProductos(productosLocales);
+    }
 
     function renderizarProductos(productos) {
+        if (!gridProductos) return;
+        
         // Limpia el grid antes de mostrar los productos
         gridProductos.innerHTML = '';
+        
+        if (productos.length === 0) {
+            gridProductos.innerHTML = '<p>No se encontraron productos.</p>';
+            return;
+        }
+        
         productos.forEach(producto => {
             const tarjetaProducto = crearTarjetaProducto(producto);
             gridProductos.appendChild(tarjetaProducto);
         });
+        
         agregarEventosBotones();
-    }
-
-    function cargarProductosLocales() {
-        loader.style.display = 'none';
-        renderizarProductos(productosLocales);
     }
 
     function agregarEventosBotones() {
@@ -168,20 +139,20 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function aplicarFiltro() {
-        let productosFiltrados = [...productosLocales]; // copia para no mutar original
+        let productosFiltrados = [...productosFirestore]; // copia para no mutar original
 
         switch(filtroSelect.value) {
             case 'precio-asc':
-                productosFiltrados.sort((a, b) => a.price - b.price);
+                productosFiltrados.sort((a, b) => a.precio - b.precio);
                 break;
             case 'precio-desc':
-                productosFiltrados.sort((a, b) => b.price - a.price);
+                productosFiltrados.sort((a, b) => b.precio - a.precio);
                 break;
             case 'nombre-asc':
-                productosFiltrados.sort((a, b) => a.title.localeCompare(b.title));
+                productosFiltrados.sort((a, b) => a.nombre.localeCompare(b.nombre));
                 break;
             case 'nombre-desc':
-                productosFiltrados.sort((a, b) => b.title.localeCompare(a.title));
+                productosFiltrados.sort((a, b) => b.nombre.localeCompare(a.nombre));
                 break;
             case 'default':
             default:
@@ -192,7 +163,10 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Listener para el filtro
-    filtroSelect.addEventListener('change', aplicarFiltro);
+    if (filtroSelect) {
+        filtroSelect.addEventListener('change', aplicarFiltro);
+    }
 
-    cargarProductosLocales();
+    // Cargar productos desde Firestore al iniciar
+    cargarProductosFirestore();
 });

@@ -1,39 +1,41 @@
-document.addEventListener('DOMContentLoaded', () => {
-    const navbar = document.querySelector('.navbar');
-    const heroShoe = document.querySelector('.hero-shoe');
-
-    // Efecto de cambio de color en navbar al hacer scroll
-    window.addEventListener('scroll', () => {
-        if (window.scrollY > 50) {
-            navbar.style.backgroundColor = 'rgba(33, 33, 33, 0.9)';
-        } else {
-            navbar.style.backgroundColor = 'var(--dark-color)';
-        }
-    });
-
-    // Animación de desplazamiento parallax suave
-    window.addEventListener('scroll', () => {
-        const scrollPosition = window.pageYOffset;
-        heroShoe.style.transform = `translateY(${scrollPosition * 0.3}px)`;
-    });
-
-    // Animación de productos al hacer scroll
-    const productos = document.querySelectorAll('.producto');
-    const observerOptions = {
-        root: null,
-        rootMargin: '0px',
-        threshold: 0.1
-    };
-
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.style.animation = 'slideIn 1s';
+// main.js - Funcionalidades principales de la página de inicio
+document.addEventListener('DOMContentLoaded', function() {
+    // Agregar eventos a los botones de "Agregar al carrito" en la página principal
+    const botonesAgregar = document.querySelectorAll('.btn-agregar-carrito');
+    
+    botonesAgregar.forEach(boton => {
+        boton.addEventListener('click', function() {
+            const id = this.getAttribute('data-id');
+            const nombre = this.getAttribute('data-nombre');
+            const precio = parseFloat(this.getAttribute('data-precio'));
+            const imagen = this.getAttribute('data-imagen');
+            
+            // Usar la función global del carrito para agregar el producto
+            if (typeof window.carritoFunctions !== 'undefined' && window.carritoFunctions.agregarAlCarrito) {
+                window.carritoFunctions.agregarAlCarrito({ id, nombre, precio, imagen });
+            } else {
+                console.error('Error: carritoFunctions no está definido.');
             }
         });
-    }, observerOptions);
-
-    productos.forEach(producto => {
-        observer.observe(producto);
     });
+    
+    // Asegurarse de que el botón "Finalizar Compra" redirija a la página de opciones de pago
+    const checkoutBtn = document.getElementById('checkout-carrito');
+    if (checkoutBtn) {
+        // Sobrescribir el evento existente (si lo hay)
+        const oldClickEvent = checkoutBtn.onclick;
+        checkoutBtn.onclick = function(e) {
+            // Si hay carritoFunctions definido, usar su función procesarCheckout
+            if (typeof window.carritoFunctions !== 'undefined') {
+                // Prevenir la acción por defecto
+                e.preventDefault();
+                
+                // Redirigir a la página de opciones de pago
+                window.location.href = 'pago-options.html';
+            } else if (oldClickEvent) {
+                // Si hay un evento click antiguo, ejecutarlo
+                return oldClickEvent.call(this, e);
+            }
+        };
+    }
 });
