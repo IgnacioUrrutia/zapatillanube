@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Resultado del Pago - Gengar Market</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/animations.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    .resultado-container {
+      max-width: 800px;
+      margin: 100px auto 50px;
+      padding: 30px;
+      background-color: white;
+      border-radius: 10px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
+    
+    .resultado-header {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    
+    .resultado-logo {
+      max-width: 200px;
+      margin-bottom: 20px;
+    }
+    
+    .resultado-exito,
+    .resultado-error,
+    .resultado-procesando {
+      text-align: center;
+      padding: 30px;
+      border-radius: 10px;
+      margin-bottom: 30px;
+    }
+    
+    .resultado-exito {
+      background-color: #e8f5e9;
+      border: 1px solid #a5d6a7;
+    }
+    
+    .resultado-error {
+      background-color: #ffebee;
+      border: 1px solid #ef9a9a;
+    }
+    
+    .resultado-procesando {
+      background-color: #e3f2fd;
+      border: 1px solid #90caf9;
+    }
+    
+    .icon-circle {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      margin-bottom: 20px;
+    }
+    
+    .icon-exito {
+      background-color: #4caf50;
+      color: white;
+    }
+    
+    .icon-error {
+      background-color: #f44336;
+      color: white;
+    }
+    
+    .icon-procesando {
+      background-color: #2196f3;
+      color: white;
+    }
+    
+    .icon-circle i {
+      font-size: 40px;
+    }
+    
+    .detalles-transaccion {
+      background-color: #f9f9f9;
+      border-radius: 10px;
+      padding: 20px;
+      margin-top: 30px;
+    }
+    
+    .detalles-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 10px 0;
+      border-bottom: 1px solid #eee;
+    }
+    
+    .detalles-item:last-child {
+      border-bottom: none;
+    }
+    
+    .detalles-item-label {
+      font-weight: bold;
+      color: #555;
+    }
+    
+    .acciones {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      margin-top: 30px;
+    }
+    
+    .btn {
+      display: inline-block;
+      padding: 12px 30px;
+      border-radius: 30px;
+      text-decoration: none;
+      font-weight: bold;
+      transition: all 0.3s ease;
+    }
+    
+    .btn-primary {
+      background-color: #009A3F;
+      color: white;
+    }
+    
+    .btn-primary:hover {
+      background-color: #007730;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+    
+    .btn-secondary {
+      background-color: #f5f5f5;
+      color: #333;
+    }
+    
+    .btn-secondary:hover {
+      background-color: #e0e0e0;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .spinner {
+      display: inline-block;
+      width: 40px;
+      height: 40px;
+      border: 4px solid rgba(0, 154, 63, 0.2);
+      border-radius: 50%;
+      border-top-color: #009A3F;
+      animation: spin 1s ease-in-out infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    #loading-message {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 40px;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <nav class="navbar">
+      <div class="navbar-brand">Gengar Market</div>
+      <ul class="navbar-nav">
+        <li><a href="index.html">Inicio</a></li>
+        <li><a href="productos.html">Productos</a></li>
+        <li><a href="productos.html">Colección</a></li>
+        <li><a href="#contacto">Contacto</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main class="resultado-container">
+    <div class="resultado-header">
+      <img src="assets/img/webpay-logo.png" alt="Webpay" class="resultado-logo">
+      <h1>Resultado de la Transacción</h1>
+    </div>
+    
+    <div id="loading-message">
+      <div class="spinner"></div>
+      <p style="margin-top: 20px;">Verificando el resultado de tu pago...</p>
+    </div>
+    
+    <!-- Contenido de éxito (se muestra dinámicamente) -->
+    <div class="resultado-exito" id="resultado-exito" style="display: none;">
+      <div class="icon-circle icon-exito">
+        <i class="fas fa-check"></i>
+      </div>
+      <h2>¡Pago Exitoso!</h2>
+      <p>Tu transacción ha sido completada con éxito.</p>
+      <p>Hemos recibido tu pago y estamos procesando tu pedido.</p>
+    </div>
+    
+    <!-- Contenido de error (se muestra dinámicamente) -->
+    <div class="resultado-error" id="resultado-error" style="display: none;">
+      <div class="icon-circle icon-error">
+        <i class="fas fa-times"></i>
+      </div>
+      <h2>Pago Rechazado</h2>
+      <p>Lo sentimos, tu transacción no pudo ser completada.</p>
+      <p id="error-detalle">Por favor, intenta nuevamente con otro medio de pago.</p>
+    </div>
+    
+    <!-- Contenido procesando (se muestra dinámicamente) -->
+    <div class="resultado-procesando" id="resultado-procesando" style="display: none;">
+      <div class="icon-circle icon-procesando">
+        <i class="fas fa-clock"></i>
+      </div>
+      <h2>Pago en Proceso</h2>
+      <p>Tu transacción está siendo procesada.</p>
+      <p>Te informaremos por correo electrónico cuando se complete.</p>
+    </div>
+    
+    <!-- Detalles de la transacción (se muestra dinámicamente) -->
+    <div class="detalles-transaccion" id="detalles-transaccion" style="display: none;">
+      <h3>Detalles de la Transacción</h3>
+      
+      <div class="detalles-item">
+        <span class="detalles-item-label">Orden de Compra:</span>
+        <span id="buyOrder"></span>
+      </div>
+      
+      <div class="detalles-item">
+        <span class="detalles-item-label">Fecha:</span>
+        <span id="transactionDate"></span>
+      </div>
+      
+      <div class="detalles-item">
+        <span class="detalles-item-label">Monto:</span>
+        <span id="amount"></span>
+      </div>
+      
+      <div class="detalles-item">
+        <span class="detalles-item-label">Estado:</span>
+        <span id="status"></span>
+      </div>
+      
+      <div class="detalles-item">
+        <span class="detalles-item-label">Tipo de Pago:</span>
+        <span id="paymentType"></span>
+      </div>
+      
+      <div class="detalles-item">
+        <span class="detalles-item-label">Últimos dígitos tarjeta:</span>
+        <span id="cardNumber"></span>
+      </div>
+      
+      <div class="detalles-item">
+        <span class="detalles-item-label">Código de Autorización:</span>
+        <span id="authorizationCode"></span>
+      </div>
+      
+      <div class="detalles-item">
+        <span class="detalles-item-label">Código de Respuesta:</span>
+        <span id="responseCode"></span>
+      </div>
+    </div>
+    
+    <!-- Botones de acción -->
+    <div class="acciones" id="acciones" style="display: none;">
+      <a href="index.html" class="btn btn-secondary">
+        <i class="fas fa-home"></i> Volver al Inicio
+      </a>
+      <a href="pantallacompra.html" class="btn btn-primary" id="btn-pedido">
+        <i class="fas fa-box"></i> Ver Mi Pedido
+      </a>
+    </div>
+  </main>
+  
+  <footer id="contacto" style="background:#111; color:#fff; text-align:center; padding:1rem 0; font-size:0.9rem;">
+    <p>&copy; 2024 Gengar Market. Todos los derechos reservados.</p>
+    <div style="margin-top: 0.5rem;">
+      <a href="https://wa.me/1234567890" target="_blank" style="color:#25D366; margin: 0 0.5rem; font-size:1.2rem;">
+        <i class="fab fa-whatsapp"></i>
+      </a>
+      <a href="https://www.instagram.com/gengar.market/" target="_blank" style="color:#E1306C; margin: 0 0.5rem; font-size:1.2rem;">
+        <i class="fab fa-instagram"></i>
+      </a>
+    </div>
+  </footer>
+
+  <script type="module">
+    import { auth, onAuthStateChanged } from "./js/firebase-config.js";
+    import { db, doc, getDoc, updateDoc } from "./js/firebase-config.js";
+    import { confirmTransaction, TRANSACTION_STATUS } from "./js/transbank-config.js";
+
+    // Función para obtener parámetros de la URL
+    function getUrlParameter(name) {
+      const urlParams = new URLSearchParams(window.location.search);
+      return urlParams.get(name);
+    }
+
+    // Función para formatear fecha
+    function formatDate(date) {
+      if (!date) return 'No disponible';
+      
+      const options = {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit'
+      };
+      
+      return new Date(date).toLocaleDateString('es-CL', options);
+    }
+
+    // Función para formatear monto
+    function formatAmount(amount) {
+      return new Intl.NumberFormat('es-CL', {
+        style: 'currency',
+        currency: 'CLP'
+      }).format(amount);
+    }
+
+    // Función para obtener descripción de un tipo de pago
+    function getPaymentTypeDescription(paymentTypeCode) {
+      const types = {
+        VD: 'Tarjeta de Débito',
+        VN: 'Tarjeta de Crédito Nacional',
+        VC: 'Tarjeta de Crédito Internacional',
+        SI: 'Prepago',
+        VP: 'Prepago',
+        S2: 'Prepago'
+      };
+      
+      return types[paymentTypeCode] || `Desconocido (${paymentTypeCode})`;
+    }
+
+    // Función principal para procesar el resultado de la transacción
+    async function procesarResultadoTransaccion() {
+      try {
+        // Verificar si el usuario está autenticado
+        const user = await new Promise((resolve) => {
+          onAuthStateChanged(auth, (user) => {
+            if (!user) {
+              window.location.href = 'login-register.html';
+            }
+            resolve(user);
+          });
+        });
+
+        if (!user) return;
+
+        // Obtener token de la URL (token_ws)
+        const token = getUrlParameter('token_ws');
+        
+        // Si no hay token, manejar posible cancelación o error
+        if (!token) {
+          // Verificar si es una cancelación por parte del usuario
+          const tbkToken = getUrlParameter('TBK_TOKEN');
+          
+          if (tbkToken) {
+            // Mostrar mensaje de error de cancelación
+            showError('La transacción fue cancelada.');
+            return;
+          }
+          
+          // Otro tipo de error
+          showError('No se recibió información del pago.');
+          return;
+        }
+
+        // Confirmar la transacción con Transbank
+        const transactionResult = await confirmTransaction(token);
+        
+        // Buscar la compra asociada a esta transacción
+        const comprasRef = collection(db, "compras");
+        const q = query(comprasRef, where("transbank.token", "==", token));
+        const querySnapshot = await getDocs(q);
+        
+        if (querySnapshot.empty) {
+          showError('No se encontró la compra asociada a esta transacción.');
+          return;
+        }
+
+        const compraDoc = querySnapshot.docs[0];
+        const compraId = compraDoc.id;
+        const compra = compraDoc.data();
+
+        // Actualizar estado de la compra en Firestore según resultado
+        let estadoCompra = 'Pendiente';
+        let estadoTransaccion = '';
+        
+        // Interpretar el código de respuesta
+        if (transactionResult.response_code === 0) {
+          estadoCompra = 'Completado';
+          estadoTransaccion = TRANSACTION_STATUS.AUTHORIZED;
+          showSuccess();
+        } else {
+          estadoCompra = 'Rechazado';
+          estadoTransaccion = TRANSACTION_STATUS.FAILED;
+          showError(`Transacción rechazada (código ${transactionResult.response_code})`);
+        }
+
+        // Guardar resultado en Firestore
+        await updateDoc(doc(db, "compras", compraId), {
+          estado: estadoCompra,
+          transbank: {
+            ...compra.transbank,
+            result: transactionResult,
+            status: estadoTransaccion,
+            updateDate: new Date()
+          }
+        });
+
+        // Guardar ID de compra en localStorage para la página de resumen
+        localStorage.setItem('gengarUltimaCompraId', compraId);
+        
+        // Limpiar carrito si el pago fue exitoso
+        if (estadoTransaccion === TRANSACTION_STATUS.AUTHORIZED) {
+          localStorage.setItem('gengarMarketCart', JSON.stringify([]));
+        }
+
+        // Mostrar detalles de la transacción
+        displayTransactionDetails(transactionResult);
+        
+      } catch (error) {
+        console.error("Error al procesar el resultado de la transacción:", error);
+        showError('Error al procesar el resultado del pago.');
+      }
+    }
+
+    // Mostrar mensaje de éxito
+    function showSuccess() {
+      document.getElementById('loading-message').style.display = 'none';
+      document.getElementById('resultado-exito').style.display = 'block';
+      document.getElementById('detalles-transaccion').style.display = 'block';
+      document.getElementById('acciones').style.display = 'flex';
+    }
+
+    // Mostrar mensaje de error
+    function showError(message) {
+      document.getElementById('loading-message').style.display = 'none';
+      document.getElementById('resultado-error').style.display = 'block';
+      document.getElementById('error-detalle').textContent = message;
+      document.getElementById('acciones').style.display = 'flex';
+      // Cambiar el botón principal
+      const btnPedido = document.getElementById('btn-pedido');
+      btnPedido.textContent = 'Intentar nuevamente';
+      btnPedido.href = 'pago-options.html';
+    }
+
+    // Mostrar detalles de la transacción
+    function displayTransactionDetails(transaction) {
+      document.getElementById('buyOrder').textContent = transaction.buy_order;
+      document.getElementById('transactionDate').textContent = formatDate(transaction.transaction_date);
+      document.getElementById('amount').textContent = formatAmount(transaction.amount);
+      document.getElementById('status').textContent = transaction.response_code === 0 ? 'Aprobada' : 'Rechazada';
+      document.getElementById('paymentType').textContent = getPaymentTypeDescription(transaction.payment_type_code);
+      document.getElementById('cardNumber').textContent = transaction.card_detail?.card_number || 'No disponible';
+      document.getElementById('authorizationCode').textContent = transaction.authorization_code || 'No disponible';
+      document.getElementById('responseCode').textContent = `${transaction.response_code}`;
+    }
+
+    // Iniciar el proceso cuando se carga la página
+    document.addEventListener('DOMContentLoaded', procesarResultadoTransaccion);
+  </script>
+</body>
+</html>

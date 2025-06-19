@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Procesando pago con Webpay - Gengar Market</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/animations.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    .transbank-container {
+      max-width: 600px;
+      margin: 100px auto 50px;
+      padding: 30px;
+      background-color: white;
+      border-radius: 10px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+      text-align: center;
+    }
+    
+    .transbank-logo {
+      max-width: 200px;
+      margin-bottom: 20px;
+    }
+    
+    .spinner {
+      display: inline-block;
+      width: 50px;
+      height: 50px;
+      border: 5px solid #f3f3f3;
+      border-top: 5px solid #009A3F;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin: 30px 0;
+    }
+    
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    
+    .error-container {
+      margin-top: 20px;
+      padding: 15px;
+      background-color: #ffebee;
+      border-radius: 5px;
+      color: #d32f2f;
+      display: none;
+    }
+    
+    .btn-retry {
+      display: inline-block;
+      margin-top: 20px;
+      padding: 10px 20px;
+      background-color: #009A3F;
+      color: white;
+      border-radius: 30px;
+      text-decoration: none;
+      font-weight: bold;
+      transition: background-color 0.3s;
+    }
+    
+    .btn-retry:hover {
+      background-color: #007730;
+    }
+  </style>
+</head>
+<body>
+  <div class="transbank-container">
+    <img src="assets/img/webpay-logo.png" alt="Webpay" class="transbank-logo">
+    <h1>Iniciando pago con Webpay</h1>
+    <p>Estamos conectando con Transbank. Por favor, espere un momento...</p>
+    
+    <div class="spinner"></div>
+    
+    <div class="error-container" id="error-container">
+      <h3>Error al conectar con Transbank</h3>
+      <p id="error-message">Ha ocurrido un error al procesar tu pago.</p>
+      <a href="pago-options.html" class="btn-retry">Intentar nuevamente</a>
+    </div>
+  </div>
+
+  <script type="module">
+    import { auth, onAuthStateChanged } from "./js/firebase-config.js";
+    import { db, doc, getDoc, updateDoc } from "./js/firebase-config.js";
+    import { createTransaction } from "./js/transbank-config.js";
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      try {
+        // Verificar si el usuario está autenticado
+        const user = await new Promise((resolve) => {
+          onAuthStateChanged(auth, (user) => {
+            if (!user) {
+              window.location.href = 'login-register.html';
+            }
+            resolve(user);
+          });
+        });
+
+        if (!user) return;
+
+        // Obtener parámetros de la URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const compraId = urlParams.get('id');
+        const total = Number(urlParams.get('total'));
+
+        if (!compraId || !total) {
+          throw new Error('Parámetros inválidos');
+        }
+
+        // Obtener detalles de la compra desde Firestore
+        const compraRef = doc(db, "compras", compraId);
+        const compraDoc = await getDoc(compraRef);
+
+        if (!compraDoc.exists()) {
+          throw new Error('La compra no existe');
+        }
+
+        const compra = compraDoc.data();
+
+        // Crear orden de compra única (usar el ID de la compra + timestamp)
+        const buyOrder = `OC-${compraId.substring(0, 10)}-${Date.now()}`;
+        
+        // ID de sesión (usar el ID del usuario)
+        const sessionId = user.uid;
+
+        // Crear transacción en Transbank
+        const response = await createTransaction(total, sessionId, buyOrder);
+
+        // Guardar datos de la transacción en Firestore
+        await updateDoc(compraRef, {
+          transbank: {
+            token: response.token,
+            buyOrder: buyOrder,
+            sessionId: sessionId,
+            initDate: new Date()
+          }
+        });
+
+        // Redirigir al usuario a la página de pago de Transbank
+        window.location.href = response.url + '?token_ws=' + response.token;
+
+      } catch (error) {
+        console.error("Error al procesar el pago con Transbank:", error);
+        
+        // Mostrar mensaje de error
+        const errorContainer = document.getElementById('error-container');
+        const errorMessage = document.getElementById('error-message');
+        
+        errorContainer.style.display = 'block';
+        errorMessage.textContent = error.message || 'Ha ocurrido un error al conectar con Transbank';
+      }
+    });
+  </script>
+</body>
+</html>

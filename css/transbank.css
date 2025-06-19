@@ -1,0 +1,174 @@
+/* Estilos específicos para la integración con Transbank */
+
+:root {
+  --transbank-green: #009A3F;
+  --transbank-blue: #005AA1;
+  --transbank-light-gray: #F5F5F5;
+  --transbank-dark-gray: #333333;
+}
+
+.transbank-badge {
+  display: inline-block;
+  padding: 3px 8px;
+  background-color: var(--transbank-green);
+  color: white;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  font-weight: bold;
+  margin-top: 5px;
+}
+
+.transbank-button {
+  background-color: var(--transbank-green);
+  color: white;
+  border: none;
+  padding: 12px 25px;
+  border-radius: 30px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: inline-block;
+  text-decoration: none;
+  text-align: center;
+}
+
+.transbank-button:hover {
+  background-color: #007730;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.transbank-card {
+  background-color: white;
+  border-radius: 10px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  padding: 25px;
+  margin-bottom: 30px;
+  border-top: 4px solid var(--transbank-green);
+}
+
+.transbank-logo-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 20px 0;
+}
+
+.transbank-logo {
+  max-width: 200px;
+}
+
+.transbank-payment-methods {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 15px;
+  margin: 20px 0;
+}
+
+.transbank-payment-method {
+  background-color: white;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 10px;
+  width: 70px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0.7;
+  transition: all 0.3s ease;
+}
+
+.transbank-payment-method:hover {
+  opacity: 1;
+  transform: scale(1.05);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+}
+
+.transbank-payment-method img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+.transbank-spinner {
+  display: inline-block;
+  width: 40px;
+  height: 40px;
+  border: 4px solid rgba(0, 154, 63, 0.2);
+  border-radius: 50%;
+  border-top-color: var(--transbank-green);
+  animation: transbank-spin 1s ease-in-out infinite;
+}
+
+@keyframes transbank-spin {
+  to { transform: rotate(360deg); }
+}
+
+.transbank-success-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background-color: var(--transbank-green);
+  color: white;
+  margin-bottom: 20px;
+}
+
+.transbank-success-icon i {
+  font-size: 40px;
+}
+
+.transbank-error-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background-color: #f44336;
+  color: white;
+  margin-bottom: 20px;
+}
+
+.transbank-error-icon i {
+  font-size: 40px;
+}
+
+.transbank-details {
+  background-color: var(--transbank-light-gray);
+  border-radius: 8px;
+  padding: 20px;
+  margin-top: 20px;
+}
+
+.transbank-details-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 0;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.transbank-details-item:last-child {
+  border-bottom: none;
+}
+
+.transbank-details-label {
+  font-weight: bold;
+  color: var(--transbank-dark-gray);
+}
+
+/* Estilos responsivos */
+@media (max-width: 768px) {
+  .transbank-payment-methods {
+    gap: 10px;
+  }
+  
+  .transbank-payment-method {
+    width: 60px;
+    height: 40px;
+  }
+}

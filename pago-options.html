@@ -121,7 +121,7 @@
     
     .opciones-pago {
       display: grid;
-      grid-template-columns: repeat(2, 1fr);
+      grid-template-columns: repeat(3, 1fr);
       gap: 20px;
       margin-bottom: 30px;
     }
@@ -241,6 +241,18 @@
       0% { transform: rotate(0deg); }
       100% { transform: rotate(360deg); }
     }
+
+    /* Badge para destacar Transbank */
+    .badge {
+      display: inline-block;
+      padding: 3px 8px;
+      background-color: #009A3F;
+      color: white;
+      border-radius: 4px;
+      font-size: 0.8rem;
+      font-weight: bold;
+      margin-top: 5px;
+    }
   </style>
 </head>
 <body>
@@ -295,11 +307,17 @@
     
     <h2>Elige tu método de pago</h2>
     <div class="opciones-pago">
+      <div class="opcion-pago" data-metodo="transbank">
+        <img src="assets/img/webpay-logo.png" alt="Webpay">
+        <h3>Webpay Plus</h3>
+        <p>Paga con tarjetas de débito, crédito o prepago</p>
+        <span class="badge">Recomendado</span>
+      </div>
+      
       <div class="opcion-pago" data-metodo="mercadopago">
         <img src="assets/img/mercadopago-logo.png" alt="MercadoPago">
         <h3>MercadoPago</h3>
         <p>Paga con tarjeta de crédito, débito o saldo en MercadoPago</p>
-        <span class="badge">Recomendado</span>
       </div>
       
       <div class="opcion-pago" data-metodo="paypal">
@@ -401,7 +419,7 @@
           return;
         }
         
-        // Iniciar proceso de pago
+        // Iniciar proceso de pago según el método seleccionado
         procesarPago();
       });
     });
@@ -450,16 +468,13 @@
           throw new Error('Debes iniciar sesión para completar la compra');
         }
         
-        // Simular procesamiento de pago (2 segundos)
-        await new Promise(resolve => setTimeout(resolve, 2000));
-        
         // Crear registro de compra en Firestore
         const compraData = {
           usuarioId: user.uid,
           productos: carritoItems,
           total: subtotalPago,
-          fecha: new Date().toISOString(),
-          estado: "Completado",
+          fecha: new Date(),
+          estado: "Pendiente",
           metodoPago: metodoPagoSeleccionado
         };
         
@@ -471,11 +486,22 @@
         localStorage.setItem('gengarUltimaCompraId', docRef.id);
         localStorage.setItem('gengarUltimaCompra', JSON.stringify(carritoItems));
         
-        // Vaciar el carrito
-        localStorage.setItem('gengarMarketCart', JSON.stringify([]));
-        
-        // Redirigir a la página de confirmación según el método de pago
-        window.location.href = 'pago-simulacion.html?metodo=' + metodoPagoSeleccionado + '&id=' + docRef.id;
+        // Redirigir según el método de pago seleccionado
+        switch (metodoPagoSeleccionado) {
+          case 'transbank':
+            // Redirigir a la página de procesamiento de Transbank
+            window.location.href = `transbank-process.html?id=${docRef.id}&total=${subtotalPago}`;
+            break;
+            
+          case 'mercadopago':
+          case 'paypal':
+            // Redirigir a la simulación de pago para otros métodos
+            window.location.href = `pago-simulacion.html?metodo=${metodoPagoSeleccionado}&id=${docRef.id}`;
+            break;
+            
+          default:
+            throw new Error('Método de pago no válido');
+        }
         
       } catch (error) {
         console.error("Error al procesar el pago:", error);

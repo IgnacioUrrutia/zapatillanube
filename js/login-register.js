@@ -32,7 +32,8 @@ document.addEventListener('DOMContentLoaded', () => {
         
         // Redireccionar después de iniciar sesión
         setTimeout(() => {
-          window.location.href = "index.html";
+          // Redirección directa a la raíz, que mostrará productos.html según la configuración de Firebase
+          window.location.href = "/";
         }, 1000);
       } catch (firebaseError) {
         console.error("Error de inicio de sesión:", firebaseError);
@@ -124,7 +125,8 @@ document.addEventListener('DOMContentLoaded', () => {
           
           // Redireccionar después del registro
           setTimeout(() => {
-            window.location.href = "index.html";
+            // Redirección directa a la raíz, que mostrará productos.html según la configuración de Firebase
+            window.location.href = "/";
           }, 1500);
         } catch (firestoreError) {
           console.error("Error específico al guardar en Firestore:", firestoreError);
@@ -135,7 +137,8 @@ document.addEventListener('DOMContentLoaded', () => {
           
           // Redirigir de todos modos después de un tiempo
           setTimeout(() => {
-            window.location.href = "index.html";
+            // Redirección directa a la raíz, que mostrará productos.html según la configuración de Firebase
+            window.location.href = "/";
           }, 2000);
         }
       } catch (authError) {
