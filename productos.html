@@ -8,6 +8,221 @@
   <link rel="stylesheet" href="css/animations.css">
   <link rel="stylesheet" href="css/cart.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    body {
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+    
+    main {
+      flex: 1;
+    }
+    
+    footer {
+      margin-top: auto;
+    }
+    
+    .productos-header {
+      background-color: #f5f5f5;
+      padding: 30px 0;
+      margin-bottom: 30px;
+      text-align: center;
+    }
+    
+    .productos-header h1 {
+      margin: 0;
+      font-size: 2.5rem;
+      color: #111;
+    }
+    
+    .productos-header p {
+      max-width: 800px;
+      margin: 10px auto 0;
+      color: #666;
+      font-size: 1.1rem;
+    }
+    
+    .productos-filtros {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      margin: 1rem 0;
+      padding: 15px;
+      background-color: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    }
+    
+    .productos-contador {
+      font-weight: bold;
+      color: #555;
+    }
+    
+    .productos-ordenar {
+      display: flex;
+      align-items: center;
+    }
+    
+    .productos-ordenar label {
+      margin-right: 10px;
+      font-weight: bold;
+      color: #555;
+    }
+    
+    .productos-ordenar select {
+      padding: 8px 12px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      background-color: white;
+      font-size: 0.95rem;
+    }
+    
+    .producto {
+      background-color: white;
+      border-radius: 12px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
+      padding: 20px 1rem;
+      text-align: center;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      margin-block: 1rem;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .producto:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.1);
+    }
+    
+    .producto-tag {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background-color: #111;
+      color: white;
+      padding: 5px 10px;
+      border-radius: 15px;
+      font-size: 0.7rem;
+      font-weight: bold;
+      text-transform: uppercase;
+    }
+    
+    .producto-imagen {
+      max-width: 100%;
+      height: 200px;
+      object-fit: contain;
+      margin-bottom: 15px;
+      transition: transform 0.3s ease;
+    }
+    
+    .producto:hover .producto-imagen {
+      transform: scale(1.05);
+    }
+    
+    .producto h3 {
+      font-size: 1.1rem;
+      margin-top: 10px;
+      margin-bottom: 8px;
+      color: #111;
+      font-weight: 600;
+      height: 2.5em;
+      overflow: hidden;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+    }
+    
+    .producto-precio {
+      font-size: 1.2rem;
+      font-weight: bold;
+      color: #111;
+      margin-bottom: 10px;
+    }
+    
+    .btn-comprar {
+      background-color: #111;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 30px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: background-color 0.3s ease, transform 0.2s ease;
+      text-transform: uppercase;
+      min-width: 160px;
+      margin-block: 10px;
+    }
+    
+    .btn-comprar:hover {
+      background-color: #333;
+      transform: translateY(-2px);
+    }
+    
+    .productos-empty {
+      text-align: center;
+      padding: 50px 20px;
+      background-color: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    }
+    
+    .productos-empty i {
+      font-size: 3rem;
+      color: #ddd;
+      margin-bottom: 20px;
+    }
+    
+    .productos-empty h3 {
+      font-size: 1.5rem;
+      margin-bottom: 10px;
+    }
+    
+    .productos-empty p {
+      color: #666;
+      margin-bottom: 20px;
+    }
+    
+    #loader {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 50px 0;
+    }
+    
+    #loader i {
+      color: #111;
+    }
+    
+    .btn-agregar-carrito {
+      background-color: transparent;
+      border: none;
+      cursor: pointer;
+      font-size: 1.2rem;
+      color: #111;
+      transition: transform 0.3s ease;
+      margin-left: 10px;
+    }
+    
+    .btn-agregar-carrito:hover {
+      transform: scale(1.2);
+    }
+    
+    .btn-actions {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    
+    @media (max-width: 768px) {
+      .productos-filtros {
+        flex-direction: column;
+        gap: 10px;
+        align-items: flex-start;
+      }
+    }
+  </style>
 </head>
 <body>
   <header>
@@ -53,23 +268,35 @@
   </aside>
 
   <main>
-    <section class="productos" style="margin-top: 80px;">
-      <h2>Nuestro Catálogo Completo</h2>
-      <div id="loader" class="loader" style="display: block; text-align: center; margin: 20px auto;">
+    <div class="productos-header">
+      <h1>Nuestro Catálogo</h1>
+      <p>Descubre nuestra selección de productos exclusivos de la más alta calidad.</p>
+    </div>
+    
+    <section class="productos" style="margin-top: 0;">
+      <div class="productos-filtros">
+        <div class="productos-contador" id="productos-contador">
+          0 productos encontrados
+        </div>
+        
+        <div class="productos-ordenar">
+          <label for="filtro-productos">Ordenar por:</label>
+          <select id="filtro-productos">
+            <option value="default">Por defecto</option>
+            <option value="precio-asc">Precio: Menor a Mayor</option>
+            <option value="precio-desc">Precio: Mayor a Menor</option>
+            <option value="nombre-asc">Nombre: A a Z</option>
+            <option value="nombre-desc">Nombre: Z a A</option>
+          </select>
+        </div>
+      </div>
+      
+      <div id="loader" class="loader">
         <i class="fas fa-spinner fa-spin fa-2x"></i>
       </div>
+      
       <div id="error-container" class="error-message"></div>
 
-      <div style="margin: 1rem 0; text-align: right;">
-        <label for="filtro-productos" style="margin-right: 0.5rem;">Ordenar por:</label>
-        <select id="filtro-productos" style="padding: 0.4rem;">
-          <option value="default">Por defecto</option>
-          <option value="precio-asc">Precio: Menor a Mayor</option>
-          <option value="precio-desc">Precio: Mayor a Menor</option>
-          <option value="nombre-asc">Nombre: A a Z</option>
-          <option value="nombre-desc">Nombre: Z a A</option>
-        </select>
-      </div>
       <div id="grid-productos" class="grid-productos">
         <!-- Los productos se cargarán dinámicamente con JavaScript -->
       </div>
@@ -78,15 +305,63 @@
 
   <div id="carrito-overlay" class="carrito-overlay"></div>
 
-  <footer id="contacto" style="background:#111; color:#fff; text-align:center; padding:1rem 0; font-size:0.9rem;">
-    <p>&copy; 2024 Gengar Market. Todos los derechos reservados.</p>
-    <div style="margin-top: 0.5rem;">
-      <a href="https://wa.me/1234567890" target="_blank" style="color:#25D366; margin: 0 0.5rem; font-size:1.2rem;">
-        <i class="fab fa-whatsapp"></i>
-      </a>
-      <a href="https://www.instagram.com/gengar.market/" target="_blank" style="color:#E1306C; margin: 0 0.5rem; font-size:1.2rem;">
-        <i class="fab fa-instagram"></i>
-      </a>
+  <footer id="contacto" style="background:#111; color:#fff; padding:2rem 0; font-size:0.9rem;">
+    <div style="max-width: 1200px; margin: 0 auto; padding: 0 20px;">
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 30px; margin-bottom: 30px;">
+        <!-- Acerca de Gengar Market -->
+        <div>
+          <h3 style="color: white; margin-bottom: 15px; font-size: 1.2rem;">Acerca de Gengar Market</h3>
+          <p style="margin-bottom: 15px; line-height: 1.6;">
+            Somos una marca especializada en productos de alta calidad. Nuestro compromiso es ofrecer la mejor experiencia de compra con productos exclusivos y un servicio excepcional.
+          </p>
+          <p style="line-height: 1.6;">
+            Fundada en 2023, Gengar Market se ha convertido en referente de estilo y calidad en el mercado chileno.
+          </p>
+        </div>
+        
+        <!-- Enlaces rápidos -->
+        <div>
+          <h3 style="color: white; margin-bottom: 15px; font-size: 1.2rem;">Enlaces Rápidos</h3>
+          <ul style="list-style: none; padding: 0;">
+            <li style="margin-bottom: 10px;"><a href="index.html" style="color: #ccc; text-decoration: none; transition: color 0.3s;">Inicio</a></li>
+            <li style="margin-bottom: 10px;"><a href="productos.html" style="color: #ccc; text-decoration: none; transition: color 0.3s;">Productos</a></li>
+            <li style="margin-bottom: 10px;"><a href="#" style="color: #ccc; text-decoration: none; transition: color 0.3s;">Preguntas Frecuentes</a></li>
+            <li style="margin-bottom: 10px;"><a href="#" style="color: #ccc; text-decoration: none; transition: color 0.3s;">Términos y Condiciones</a></li>
+          </ul>
+        </div>
+        
+        <!-- Contacto -->
+        <div>
+          <h3 style="color: white; margin-bottom: 15px; font-size: 1.2rem;">Contáctanos</h3>
+          <p style="margin-bottom: 10px; display: flex; align-items: center;">
+            <i class="fas fa-map-marker-alt" style="width: 20px; margin-right: 10px;"></i> 
+            Av. Providencia 1234, Santiago
+          </p>
+          <p style="margin-bottom: 10px; display: flex; align-items: center;">
+            <i class="fas fa-phone" style="width: 20px; margin-right: 10px;"></i>
+            +56 9 1234 5678
+          </p>
+          <p style="margin-bottom: 10px; display: flex; align-items: center;">
+            <i class="fas fa-envelope" style="width: 20px; margin-right: 10px;"></i>
+            contacto@gengarmarket.com
+          </p>
+          <div style="margin-top: 15px;">
+            <a href="https://www.facebook.com/" target="_blank" style="color: #fff; margin-right: 15px; font-size: 1.2rem;">
+              <i class="fab fa-facebook"></i>
+            </a>
+            <a href="https://www.instagram.com/gengar.market/" target="_blank" style="color: #fff; margin-right: 15px; font-size: 1.2rem;">
+              <i class="fab fa-instagram"></i>
+            </a>
+            <a href="https://twitter.com/" target="_blank" style="color: #fff; margin-right: 15px; font-size: 1.2rem;">
+              <i class="fab fa-twitter"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+      
+      <div style="text-align: center; padding-top: 20px; border-top: 1px solid #333;">
+        <p>&copy; 2024 Gengar Market. Todos los derechos reservados.</p>
+      </div>
     </div>
   </footer>
 
@@ -95,5 +370,102 @@
   <script type="module" src="js/cart.js"></script>
   <script type="module" src="js/auth.js"></script>
   <script type="module" src="js/admin-button.js"></script>
+  
+  <script type="module">
+    // Script adicional para actualizar la función de crear tarjeta de producto
+    document.addEventListener('DOMContentLoaded', () => {
+      // Sobrescribir la función crearTarjetaProducto si existe en el contexto global
+      if (window.crearTarjetaProducto) {
+        const originalFunction = window.crearTarjetaProducto;
+        
+        window.crearTarjetaProducto = function(producto) {
+          const productoDiv = document.createElement('div');
+          productoDiv.classList.add('producto');
+
+          // Determinar si tiene etiqueta especial
+          let tagHTML = '';
+          if (producto.stock && producto.stock < 5) {
+            tagHTML = '<div class="producto-tag">Últimas unidades</div>';
+          }
+
+          const imagenUrl = producto.imagenes && producto.imagenes.length > 0
+              ? producto.imagenes[0]
+              : 'https://via.placeholder.com/600x400?text=Imagen+no+disponible';
+
+          productoDiv.innerHTML = `
+              ${tagHTML}
+              <img src="${imagenUrl}" alt="${producto.nombre}" class="producto-imagen">
+              <h3>${producto.nombre}</h3>
+              <p class="producto-precio">${formatearPrecio(producto.precio)}</p>
+              <div class="btn-actions">
+                <button class="btn-comprar">
+                  Ver Detalles
+                </button>
+                <button class="btn-agregar-carrito" 
+                      data-id="${producto.id}" 
+                      data-nombre="${producto.nombre}" 
+                      data-precio="${producto.precio}" 
+                      data-imagen="${imagenUrl}">
+                  <i class="fas fa-cart-plus"></i>
+                </button>
+              </div>
+          `;
+          
+          // Agregar el evento al botón agregar carrito
+          const btnAgregar = productoDiv.querySelector('.btn-agregar-carrito');
+          if (btnAgregar) {
+            btnAgregar.addEventListener('click', function(e) {
+              e.stopPropagation(); // Evitar que se propague al contenedor
+              
+              const id = this.getAttribute('data-id');
+              const nombre = this.getAttribute('data-nombre');
+              const precio = parseFloat(this.getAttribute('data-precio'));
+              const imagen = this.getAttribute('data-imagen');
+              
+              if (typeof window.carritoFunctions !== 'undefined' && window.carritoFunctions.agregarAlCarrito) {
+                  window.carritoFunctions.agregarAlCarrito({ id, nombre, precio, imagen });
+              } else {
+                  console.error('Error: carritoFunctions no está definido.');
+              }
+            });
+          }
+          
+          return productoDiv;
+        };
+        
+        // Función para formatear precio (mantener la original si existe)
+        function formatearPrecio(precio) {
+          if (window.formatearPrecio) {
+            return window.formatearPrecio(precio);
+          }
+          
+          return new Intl.NumberFormat('es-CL', {
+            style: 'currency',
+            currency: 'CLP'
+          }).format(precio);
+        }
+      }
+      
+      // Actualizar contador de productos
+      const actualizarContador = () => {
+        const gridProductos = document.getElementById('grid-productos');
+        const contador = document.getElementById('productos-contador');
+        
+        if (gridProductos && contador) {
+          const numProductos = gridProductos.children.length;
+          contador.textContent = `${numProductos} producto${numProductos !== 1 ? 's' : ''} encontrado${numProductos !== 1 ? 's' : ''}`;
+        }
+      };
+      
+      // Verificar periódicamente si los productos se han cargado
+      const checkInterval = setInterval(() => {
+        const gridProductos = document.getElementById('grid-productos');
+        if (gridProductos && gridProductos.children.length > 0) {
+          actualizarContador();
+          clearInterval(checkInterval);
+        }
+      }, 500);
+    });
+  </script>
 </body>
 </html>

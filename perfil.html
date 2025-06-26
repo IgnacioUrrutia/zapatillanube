@@ -5,9 +5,270 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Mi Perfil - Gengar Market</title>
   <link rel="stylesheet" href="css/styles.css">
-  <link rel="stylesheet" href="css/login.css"> 
+  <link rel="stylesheet" href="css/animations.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    /* Estilos específicos para el perfil */
+    .perfil-container {
+      max-width: 900px;
+      margin: 100px auto 50px;
+      padding: 30px;
+      box-shadow: none;
+      background: transparent;
+    }
+    
+    .perfil-header {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-bottom: 30px;
+    }
+    
+    .perfil-avatar {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 5px solid white;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      margin-bottom: 15px;
+      background-color: #111;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 3rem;
+    }
+    
+    .perfil-nombre {
+      font-size: 1.8rem;
+      font-weight: bold;
+      margin: 10px 0 5px;
+    }
+    
+    .perfil-email {
+      color: #666;
+      margin-bottom: 15px;
+    }
+    
+    .perfil-badge {
+      display: inline-block;
+      padding: 5px 15px;
+      background-color: #111;
+      color: white;
+      border-radius: 20px;
+      font-size: 0.9rem;
+      margin-bottom: 10px;
+    }
+    
+    .perfil-grid {
+      display: grid;
+      grid-template-columns: 1fr 2fr;
+      gap: 30px;
+    }
+    
+    .perfil-seccion {
+      background-color: white;
+      border-radius: 10px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+      padding: 25px;
+      margin-bottom: 30px;
+    }
+    
+    .perfil-seccion h3 {
+      margin-top: 0;
+      border-bottom: 1px solid #eee;
+      padding-bottom: 15px;
+      margin-bottom: 20px;
+      font-size: 1.3rem;
+      display: flex;
+      align-items: center;
+    }
+    
+    .perfil-seccion h3 i {
+      margin-right: 10px;
+      color: #111;
+    }
+    
+    .perfil-datos {
+      margin-bottom: 20px;
+    }
+    
+    .perfil-dato {
+      display: flex;
+      margin-bottom: 12px;
+    }
+    
+    .perfil-dato-label {
+      width: 120px;
+      font-weight: bold;
+      color: #555;
+    }
+    
+    .perfil-dato-valor {
+      flex: 1;
+    }
+    
+    .btn-logout {
+      background-color: #111;
+      color: white;
+      border: none;
+      padding: 12px 20px;
+      border-radius: 30px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.3s;
+      width: 100%;
+      margin-top: 20px;
+    }
+    
+    .btn-logout:hover {
+      background-color: #333;
+      transform: translateY(-2px);
+    }
+    
+    .compra-item {
+      background-color: #f9f9f9;
+      border-radius: 8px;
+      padding: 15px;
+      margin-bottom: 20px;
+      transition: all 0.3s;
+    }
+    
+    .compra-item:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    }
+    
+    .compra-header {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
+    
+    .compra-fecha {
+      color: #666;
+      font-size: 0.9rem;
+    }
+    
+    .compra-estado {
+      font-weight: bold;
+    }
+    
+    .compra-estado.completado {
+      color: #2ecc71;
+    }
+    
+    .compra-estado.pendiente {
+      color: #f39c12;
+    }
+    
+    .compra-estado.rechazado {
+      color: #e74c3c;
+    }
+    
+    .compra-total {
+      font-size: 1.2rem;
+      font-weight: bold;
+      margin-bottom: 10px;
+      color: #111;
+    }
+    
+    .compra-productos {
+      margin-top: 15px;
+    }
+    
+    .compra-producto {
+      display: flex;
+      align-items: center;
+      padding: 8px 0;
+      border-bottom: 1px solid #eee;
+    }
+    
+    .compra-producto:last-child {
+      border-bottom: none;
+    }
+    
+    .compra-producto-nombre {
+      flex: 1;
+    }
+    
+    .compra-producto-cantidad {
+      background-color: #111;
+      color: white;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.8rem;
+      margin-right: 10px;
+    }
+    
+    .compra-producto-precio {
+      font-weight: bold;
+      margin-left: 10px;
+    }
+    
+    .stats-container {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+    
+    .stat-box {
+      background-color: #f5f5f5;
+      border-radius: 8px;
+      padding: 15px;
+      text-align: center;
+    }
+    
+    .stat-value {
+      font-size: 2rem;
+      font-weight: bold;
+      margin: 10px 0;
+      color: #111;
+    }
+    
+    .stat-label {
+      color: #666;
+      font-size: 0.9rem;
+    }
+    
+    .volver-btn {
+      display: inline-flex;
+      align-items: center;
+      background-color: transparent;
+      color: #111;
+      text-decoration: none;
+      font-weight: bold;
+      padding: 10px 0;
+    }
+    
+    .volver-btn i {
+      margin-right: 5px;
+    }
+    
+    /* Responsivo */
+    @media (max-width: 768px) {
+      .perfil-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .perfil-dato {
+        flex-direction: column;
+      }
+      
+      .perfil-dato-label {
+        width: 100%;
+        margin-bottom: 5px;
+      }
+    }
+  </style>
 </head>
- <body>
+<body>
   <header>
     <nav class="navbar">
       <div class="navbar-brand">Gengar Market</div>
@@ -20,27 +281,67 @@
     </nav>
   </header>
 
-  <main class="auth-wrapper perfil-container" style="margin-top: 100px;">
-    <section class="auth-form" style="align-items: center; text-align: center; width: 100%;">
-      <img src="assets/img/logo.png" alt="Avatar de usuario" style="width:100px; height:100px; border-radius:50%; margin-bottom:1rem;">
-      <h1>👋 Bienvenido a tu Perfil</h1>
-      
-      <div class="info-usuario">
-        <p><strong>Nombre:</strong> <span id="perfilNombre">Cargando...</span></p>
-        <p><strong>Correo:</strong> <span id="perfilCorreo">Cargando...</span></p>
+  <main class="perfil-container">
+    <a href="index.html" class="volver-btn">
+      <i class="fas fa-arrow-left"></i> Volver al Inicio
+    </a>
+    
+    <div class="perfil-header">
+      <div class="perfil-avatar">
+        <i class="fas fa-user"></i>
+      </div>
+      <h1 class="perfil-nombre" id="perfilNombre">Cargando...</h1>
+      <div class="perfil-email" id="perfilCorreo">Cargando...</div>
+      <div class="perfil-badge">Cliente</div>
+    </div>
+    
+    <div class="perfil-grid">
+      <div>
+        <div class="perfil-seccion">
+          <h3><i class="fas fa-user-circle"></i> Información Personal</h3>
+          <div class="perfil-datos">
+            <div class="perfil-dato">
+              <div class="perfil-dato-label">Nombre:</div>
+              <div class="perfil-dato-valor" id="infoNombre">Cargando...</div>
+            </div>
+            <div class="perfil-dato">
+              <div class="perfil-dato-label">Email:</div>
+              <div class="perfil-dato-valor" id="infoEmail">Cargando...</div>
+            </div>
+            <div class="perfil-dato">
+              <div class="perfil-dato-label">Fecha registro:</div>
+              <div class="perfil-dato-valor" id="infoFechaRegistro">Cargando...</div>
+            </div>
+          </div>
+          <button id="logout" class="btn-logout">Cerrar Sesión</button>
+        </div>
+        
+        <div class="perfil-seccion">
+          <h3><i class="fas fa-chart-pie"></i> Estadísticas</h3>
+          <div class="stats-container">
+            <div class="stat-box">
+              <div class="stat-value" id="statCompras">0</div>
+              <div class="stat-label">Compras</div>
+            </div>
+            <div class="stat-box">
+              <div class="stat-value" id="statProductos">0</div>
+              <div class="stat-label">Productos</div>
+            </div>
+          </div>
+        </div>
       </div>
       
-      <button id="logout" class="btn-logout">Cerrar Sesión</button>
-      
-      <div id="historialCompras">
-        <h3>Cargando historial de compras...</h3>
+      <div class="perfil-seccion">
+        <h3><i class="fas fa-shopping-bag"></i> Historial de Compras</h3>
+        <div id="historialCompras">
+          <p class="cargando-mensaje">Cargando historial de compras...</p>
+          <!-- Aquí se cargarán las compras dinámicamente -->
+        </div>
       </div>
-      
-      <a href="index.html" class="volver-btn" style="margin-top: 1rem; display: inline-block; text-decoration: none; color: #111; font-weight: bold;">⬅️ Volver al inicio</a>
-    </section>
+    </div>
   </main>
- </body>
- <footer style="background:#111; color:#fff; text-align:center; padding:1rem 0; font-size:0.9rem; margin-top: 2rem;">
+
+  <footer id="contacto" style="background:#111; color:#fff; text-align:center; padding:1rem 0; font-size:0.9rem;">
     <p>&copy; 2024 Gengar Market. Todos los derechos reservados.</p>
     <div style="margin-top: 0.5rem;">
       <a href="https://wa.me/1234567890" target="_blank" style="color:#25D366; margin: 0 0.5rem; font-size:1.2rem;">
@@ -50,8 +351,189 @@
         <i class="fab fa-instagram"></i>
       </a>
     </div>
- </footer>
+  </footer>
 
-  <script type="module" src="js/perfil.js"></script>
-  <script type="module" src="js/auth.js"></script>
+  <script type="module">
+    import { auth, onAuthStateChanged, signOut } from "./js/firebase-config.js";
+    import { db, collection, getDocs, query, where } from "./js/firebase-config.js";
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      const perfilNombre = document.getElementById("perfilNombre");
+      const perfilCorreo = document.getElementById("perfilCorreo");
+      const infoNombre = document.getElementById("infoNombre");
+      const infoEmail = document.getElementById("infoEmail");
+      const infoFechaRegistro = document.getElementById("infoFechaRegistro");
+      const statCompras = document.getElementById("statCompras");
+      const statProductos = document.getElementById("statProductos");
+      const historialCompras = document.getElementById("historialCompras");
+      const logoutBtn = document.getElementById("logout");
+      
+      if (logoutBtn) {
+        logoutBtn.addEventListener("click", async () => {
+          try {
+            await signOut(auth);
+            window.location.href = "index.html";
+          } catch (error) {
+            console.error("Error al cerrar sesión:", error);
+          }
+        });
+      }
+
+      // Comprobar estado de autenticación y cargar datos del usuario
+      onAuthStateChanged(auth, async (user) => {
+        if (!user) {
+          // Si no hay usuario autenticado, redirigir al login
+          window.location.href = "login-register.html";
+          return;
+        }
+        
+        // Mostrar email del usuario
+        if (perfilCorreo) perfilCorreo.textContent = user.email;
+        if (infoEmail) infoEmail.textContent = user.email;
+        
+        try {
+          // Buscar información adicional del usuario en Firestore
+          const q = query(collection(db, "usuarios"), where("uid", "==", user.uid));
+          const querySnapshot = await getDocs(q);
+          
+          if (!querySnapshot.empty) {
+            const userData = querySnapshot.docs[0].data();
+            
+            if (userData.nombre) {
+              if (perfilNombre) perfilNombre.textContent = userData.nombre;
+              if (infoNombre) infoNombre.textContent = userData.nombre;
+            }
+            
+            if (userData.fechaRegistro) {
+              const fecha = new Date(userData.fechaRegistro);
+              if (infoFechaRegistro) {
+                infoFechaRegistro.textContent = fecha.toLocaleDateString('es-ES', {
+                  year: 'numeric',
+                  month: 'long',
+                  day: 'numeric'
+                });
+              }
+            }
+          }
+          
+          // Cargar historial de compras
+          if (historialCompras) {
+            const comprasQuery = query(collection(db, "compras"), where("usuarioId", "==", user.uid));
+            const comprasSnapshot = await getDocs(comprasQuery);
+            
+            if (comprasSnapshot.empty) {
+              historialCompras.innerHTML = "<p>No has realizado compras aún.</p>";
+              if (statCompras) statCompras.textContent = "0";
+              if (statProductos) statProductos.textContent = "0";
+            } else {
+              // Limpiar el contenedor
+              historialCompras.innerHTML = "";
+              
+              // Variables para estadísticas
+              let totalCompras = 0;
+              let totalProductos = 0;
+              
+              // Ordenar compras por fecha (más recientes primero)
+              const compras = [];
+              comprasSnapshot.forEach(doc => {
+                const compra = doc.data();
+                compra.id = doc.id;
+                compras.push(compra);
+              });
+              
+              compras.sort((a, b) => {
+                return new Date(b.fecha) - new Date(a.fecha);
+              });
+              
+              // Mostrar cada compra
+              compras.forEach(compra => {
+                totalCompras++;
+                
+                // Calcular total de productos
+                const numProductos = compra.productos?.reduce((sum, p) => sum + p.cantidad, 0) || 0;
+                totalProductos += numProductos;
+                
+                // Crear elemento de compra
+                const compraEl = document.createElement('div');
+                compraEl.className = 'compra-item';
+                
+                // Determinar clase para el estado
+                let estadoClass = '';
+                switch(compra.estado) {
+                  case 'Completado': estadoClass = 'completado'; break;
+                  case 'Pendiente': estadoClass = 'pendiente'; break;
+                  case 'Rechazado': estadoClass = 'rechazado'; break;
+                  default: estadoClass = '';
+                }
+                
+                // Formatear fecha
+                const fecha = compra.fecha ? new Date(compra.fecha.seconds * 1000) : new Date();
+                const fechaFormateada = fecha.toLocaleDateString('es-ES', {
+                  year: 'numeric',
+                  month: 'long',
+                  day: 'numeric'
+                });
+                
+                // Formatear monto
+                const montoFormateado = new Intl.NumberFormat('es-CL', {
+                  style: 'currency',
+                  currency: 'CLP'
+                }).format(compra.total || 0);
+                
+                // Generar HTML
+                compraEl.innerHTML = `
+                  <div class="compra-header">
+                    <div class="compra-fecha">${fechaFormateada}</div>
+                    <div class="compra-estado ${estadoClass}">${compra.estado || 'Completado'}</div>
+                  </div>
+                  <div class="compra-total">${montoFormateado}</div>
+                `;
+                
+                // Agregar productos si existen
+                if (compra.productos && compra.productos.length > 0) {
+                  const productosEl = document.createElement('div');
+                  productosEl.className = 'compra-productos';
+                  
+                  compra.productos.forEach(producto => {
+                    const productoEl = document.createElement('div');
+                    productoEl.className = 'compra-producto';
+                    
+                    // Calcular subtotal
+                    const subtotal = producto.precio * producto.cantidad;
+                    const subtotalFormateado = new Intl.NumberFormat('es-CL', {
+                      style: 'currency',
+                      currency: 'CLP'
+                    }).format(subtotal);
+                    
+                    productoEl.innerHTML = `
+                      <div class="compra-producto-cantidad">${producto.cantidad}</div>
+                      <div class="compra-producto-nombre">${producto.nombre}</div>
+                      <div class="compra-producto-precio">${subtotalFormateado}</div>
+                    `;
+                    
+                    productosEl.appendChild(productoEl);
+                  });
+                  
+                  compraEl.appendChild(productosEl);
+                }
+                
+                historialCompras.appendChild(compraEl);
+              });
+              
+              // Actualizar estadísticas
+              if (statCompras) statCompras.textContent = totalCompras;
+              if (statProductos) statProductos.textContent = totalProductos;
+            }
+          }
+          
+        } catch (error) {
+          console.error("Error al cargar datos del usuario:", error);
+          if (historialCompras) {
+            historialCompras.innerHTML = "<p>Error al cargar el historial de compras.</p>";
+          }
+        }
+      });
+    });
+  </script>
+</body>
 </html>

@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Formulario de Pago - Webpay Plus</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    body {
+      font-family: 'Helvetica Neue', Arial, sans-serif;
+      background-color: #f5f5f5;
+      margin: 0;
+      padding: 0;
+      color: #333;
+    }
+    
+    .webpay-header {
+      background-color: #009A3F;
+      color: white;
+      padding: 15px 0;
+      text-align: center;
+    }
+    
+    .webpay-logo {
+      max-width: 180px;
+      margin: 0 auto;
+      display: block;
+    }
+    
+    .webpay-container {
+      max-width: 600px;
+      margin: 30px auto;
+      background-color: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      padding: 25px;
+    }
+    
+    .order-details {
+      background-color: #f8f8f8;
+      border-radius: 6px;
+      padding: 15px;
+      margin-bottom: 25px;
+    }
+    
+    .order-details h3 {
+      margin-top: 0;
+      color: #333;
+      font-size: 16px;
+      border-bottom: 1px solid #ddd;
+      padding-bottom: 10px;
+    }
+    
+    .order-detail-row {
+      display: flex;
+      justify-content: space-between;
+      margin: 8px 0;
+      font-size: 14px;
+    }
+    
+    .payment-options {
+      margin-bottom: 25px;
+    }
+    
+    .payment-options h3 {
+      margin-top: 0;
+      color: #333;
+      font-size: 16px;
+      border-bottom: 1px solid #ddd;
+      padding-bottom: 10px;
+    }
+    
+    .payment-option {
+      display: flex;
+      align-items: center;
+      margin: 15px 0;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    
+    .payment-option:hover {
+      border-color: #009A3F;
+      background-color: #f9f9f9;
+    }
+    
+    .payment-option.selected {
+      border-color: #009A3F;
+      background-color: #f0f9f0;
+    }
+    
+    .payment-option-icon {
+      width: 40px;
+      margin-right: 15px;
+      display: flex;
+      justify-content: center;
+    }
+    
+    .payment-option-icon i {
+      font-size: 24px;
+      color: #009A3F;
+    }
+    
+    .payment-option-details {
+      flex-grow: 1;
+    }
+    
+    .payment-option-title {
+      font-weight: bold;
+      margin-bottom: 3px;
+    }
+    
+    .payment-option-description {
+      color: #666;
+      font-size: 13px;
+    }
+    
+    .card-form {
+      margin-top: 25px;
+      display: none;
+    }
+    
+    .card-form.visible {
+      display: block;
+    }
+    
+    .form-group {
+      margin-bottom: 15px;
+    }
+    
+    .form-group label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: bold;
+      font-size: 14px;
+    }
+    
+    .form-group input, 
+    .form-group select {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 14px;
+    }
+    
+    .form-row {
+      display: flex;
+      gap: 15px;
+    }
+    
+    .form-row .form-group {
+      flex: 1;
+    }
+    
+    .card-details {
+      padding: 15px;
+      background-color: #f8f8f8;
+      border-radius: 6px;
+      margin-bottom: 20px;
+    }
+    
+    .webpay-btn {
+      background-color: #009A3F;
+      color: white;
+      border: none;
+      padding: 12px 20px;
+      border-radius: 4px;
+      font-weight: bold;
+      cursor: pointer;
+      font-size: 14px;
+      width: 100%;
+      transition: background-color 0.2s ease;
+    }
+    
+    .webpay-btn:hover {
+      background-color: #007d32;
+    }
+    
+    .security-badges {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      margin-top: 25px;
+    }
+    
+    .security-badge {
+      display: flex;
+      align-items: center;
+      font-size: 12px;
+      color: #666;
+    }
+    
+    .security-badge i {
+      margin-right: 5px;
+      color: #009A3F;
+    }
+    
+    /* Sección de autenticación */
+    .auth-section {
+      display: none;
+      margin-top: 25px;
+    }
+    
+    .auth-section.visible {
+      display: block;
+    }
+    
+    .auth-banner {
+      display: flex;
+      align-items: center;
+      background-color: #005AA1;
+      color: white;
+      padding: 10px 15px;
+      border-radius: 6px 6px 0 0;
+    }
+    
+    .auth-banner img {
+      height: 30px;
+      margin-right: 10px;
+    }
+    
+    .auth-content {
+      background-color: #f8f8f8;
+      padding: 20px;
+      border-radius: 0 0 6px 6px;
+      border: 1px solid #ddd;
+      border-top: none;
+    }
+    
+    .auth-message {
+      margin-bottom: 15px;
+      font-size: 14px;
+    }
+    
+    /* Sección de procesamiento */
+    .processing-section {
+      display: none;
+      text-align: center;
+      padding: 30px;
+    }
+    
+    .processing-section.visible {
+      display: block;
+    }
+    
+    .spinner {
+      display: inline-block;
+      width: 50px;
+      height: 50px;
+      border: 5px solid rgba(0, 154, 63, 0.2);
+      border-radius: 50%;
+      border-top-color: #009A3F;
+      animation: spin 1s ease-in-out infinite;
+      margin-bottom: 20px;
+    }
+    
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    
+    /* Sección de confirmación */
+    .confirmation-section {
+      display: none;
+      text-align: center;
+      padding: 30px;
+    }
+    
+    .confirmation-section.visible {
+      display: block;
+    }
+    
+    .confirmation-icon {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background-color: #009A3F;
+      color: white;
+      margin-bottom: 20px;
+    }
+    
+    .confirmation-icon i {
+      font-size: 40px;
+    }
+  </style>
+</head>
+<body>
+  <header class="webpay-header">
+    <img src="../assets/img/webpay-logo.png" alt="Webpay" class="webpay-logo">
+  </header>
+
+  <div class="webpay-container">
+    <div id="payment-form-section">
+      <div class="order-details">
+        <h3>Detalle de la compra</h3>
+        <div class="order-detail-row">
+          <span>Comercio:</span>
+          <span>Gengar Market</span>
+        </div>
+        <div class="order-detail-row">
+          <span>Orden de compra:</span>
+          <span id="buy-order">OC-123456789</span>
+        </div>
+        <div class="order-detail-row">
+          <span>Monto:</span>
+          <span id="total-amount">$9.990</span>
+        </div>
+      </div>
+      
+      <div class="payment-options">
+        <h3>Selecciona tu medio de pago</h3>
+        
+        <div class="payment-option selected" data-type="credit">
+          <div class="payment-option-icon">
+            <i class="fas fa-credit-card"></i>
+          </div>
+          <div class="payment-option-details">
+            <div class="payment-option-title">Tarjeta de Crédito</div>
+            <div class="payment-option-description">Paga en cuotas o al contado con tu tarjeta de crédito.</div>
+          </div>
+        </div>
+        
+        <div class="payment-option" data-type="debit">
+          <div class="payment-option-icon">
+            <i class="fas fa-money-check"></i>
+          </div>
+          <div class="payment-option-details">
+            <div class="payment-option-title">Tarjeta de Débito</div>
+            <div class="payment-option-description">Paga directamente desde tu cuenta bancaria.</div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="card-form visible" id="credit-form">
+        <div class="card-details">
+          <div class="form-group">
+            <label for="card-number">Número de tarjeta</label>
+            <input type="text" id="card-number" placeholder="4051 8856 0044 6623" value="4051 8856 0044 6623" maxlength="19">
+          </div>
+          
+          <div class="form-row">
+            <div class="form-group">
+              <label for="card-expiry">Fecha de expiración</label>
+              <input type="text" id="card-expiry" placeholder="MM/AA" value="12/25" maxlength="5">
+            </div>
+            <div class="form-group">
+              <label for="card-cvv">CVV</label>
+              <input type="text" id="card-cvv" placeholder="123" value="123" maxlength="3">
+            </div>
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <label for="installments">Cuotas</label>
+          <select id="installments">
+            <option value="0">Sin cuotas</option>
+            <option value="3">3 cuotas sin interés</option>
+            <option value="6">6 cuotas sin interés</option>
+          </select>
+        </div>
+        
+        <button type="button" id="pay-btn" class="webpay-btn">Pagar</button>
+      </div>
+      
+      <div class="card-form" id="debit-form">
+        <div class="card-details">
+          <div class="form-group">
+            <label for="debit-card-number">Número de tarjeta</label>
+            <input type="text" id="debit-card-number" placeholder="5412 7534 9821 4561" value="5412 7534 9821 4561" maxlength="19">
+          </div>
+          
+          <div class="form-row">
+            <div class="form-group">
+              <label for="debit-expiry">Fecha de expiración</label>
+              <input type="text" id="debit-expiry" placeholder="MM/AA" value="12/25" maxlength="5">
+            </div>
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <label for="bank">Banco</label>
+          <select id="bank">
+            <option value="banco-de-chile">Banco de Chile</option>
+            <option value="banco-estado">BancoEstado</option>
+            <option value="banco-santander">Banco Santander</option>
+            <option value="banco-bci">Banco BCI</option>
+          </select>
+        </div>
+        
+        <button type="button" id="debit-pay-btn" class="webpay-btn">Pagar</button>
+      </div>
+      
+      <div class="security-badges">
+        <div class="security-badge">
+          <i class="fas fa-lock"></i>
+          <span>Pago Seguro</span>
+        </div>
+        <div class="security-badge">
+          <i class="fas fa-shield-alt"></i>
+          <span>Protección al Comprador</span>
+        </div>
+        <div class="security-badge">
+          <i class="fas fa-key"></i>
+          <span>Encriptación SSL</span>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Sección de autenticación (solo visible después de hacer clic en pagar) -->
+    <div class="auth-section" id="auth-section">
+      <div class="auth-banner">
+        <img src="https://www.visa.com/images/merchantoffers/visa-logo-white.svg" alt="Visa">
+        <span>Verificación Segura</span>
+      </div>
+      <div class="auth-content">
+        <div class="auth-message">
+          <p>Para proteger tu compra, necesitamos verificar tu identidad.</p>
+        </div>
+        
+        <div class="form-group">
+          <label for="rut">RUT</label>
+          <input type="text" id="rut" placeholder="11.111.111-1" value="11.111.111-1">
+        </div>
+        
+        <div class="form-group">
+          <label for="auth-code">Clave</label>
+          <input type="password" id="auth-code" placeholder="******" value="123">
+        </div>
+        
+        <button type="button" id="auth-btn" class="webpay-btn">Verificar</button>
+      </div>
+    </div>
+    
+    <!-- Sección de procesamiento (visible durante la simulación de procesamiento) -->
+    <div class="processing-section" id="processing-section">
+      <div class="spinner"></div>
+      <h3>Procesando tu pago</h3>
+      <p>Por favor, espera mientras verificamos tu pago con el banco emisor.</p>
+    </div>
+    
+    <!-- Sección de confirmación (visible después del procesamiento exitoso) -->
+    <div class="confirmation-section" id="confirmation-section">
+      <div class="confirmation-icon">
+        <i class="fas fa-check"></i>
+      </div>
+      <h3>¡Pago completado con éxito!</h3>
+      <p>Tu transacción ha sido aprobada.</p>
+      <p>Redirigiendo a la tienda...</p>
+      
+      <div style="margin-top: 20px;">
+        <button type="button" id="return-btn" class="webpay-btn">Volver a la tienda</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // Obtener parámetros de la URL
+      const urlParams = new URLSearchParams(window.location.search);
+      const token = urlParams.get('token_ws') || 'token-simulado';
+      const amount = urlParams.get('amount') || '9990';
+      const buyOrder = urlParams.get('buy_order') || 'OC-123456789';
+      
+      // Mostrar datos en la página
+      document.getElementById('buy-order').textContent = buyOrder;
+      document.getElementById('total-amount').textContent = `$${parseInt(amount).toLocaleString('es-CL')}`;
+      
+      // Alternar entre opciones de pago
+      const paymentOptions = document.querySelectorAll('.payment-option');
+      paymentOptions.forEach(option => {
+        option.addEventListener('click', () => {
+          // Quitar selección de todas las opciones
+          paymentOptions.forEach(opt => opt.classList.remove('selected'));
+          
+          // Marcar la opción seleccionada
+          option.classList.add('selected');
+          
+          // Mostrar el formulario correspondiente
+          const paymentType = option.dataset.type;
+          document.getElementById('credit-form').classList.toggle('visible', paymentType === 'credit');
+          document.getElementById('debit-form').classList.toggle('visible', paymentType === 'debit');
+        });
+      });
+      
+      // Botones de pago
+      document.getElementById('pay-btn').addEventListener('click', startPaymentProcess);
+      document.getElementById('debit-pay-btn').addEventListener('click', startPaymentProcess);
+      
+      // Botón de autenticación
+      document.getElementById('auth-btn').addEventListener('click', finishAuthentication);
+      
+      // Botón de retorno
+      document.getElementById('return-btn').addEventListener('click', returnToStore);
+    });
+    
+    // Función para iniciar el proceso de pago
+    function startPaymentProcess() {
+      // Ocultar el formulario de pago
+      document.getElementById('payment-form-section').style.display = 'none';
+      
+      // Mostrar la sección de autenticación
+      document.getElementById('auth-section').classList.add('visible');
+    }
+    
+    // Función para finalizar la autenticación
+    function finishAuthentication() {
+      // Ocultar la sección de autenticación
+      document.getElementById('auth-section').classList.remove('visible');
+      
+      // Mostrar la sección de procesamiento
+      document.getElementById('processing-section').classList.add('visible');
+      
+      // Simular tiempo de procesamiento
+      setTimeout(() => {
+        // Ocultar la sección de procesamiento
+        document.getElementById('processing-section').classList.remove('visible');
+        
+        // Mostrar la sección de confirmación
+        document.getElementById('confirmation-section').classList.add('visible');
+        
+        // Redirección automática después de un tiempo
+        setTimeout(returnToStore, 5000);
+      }, 3000);
+    }
+    
+    // Función para volver a la tienda
+    function returnToStore() {
+      // Construir URL de retorno con token simulado
+      const returnUrl = window.location.origin + '/transbank-return.html?token_ws=token-simulado-' + Math.random().toString(36).substring(2, 15);
+      
+      // Redireccionar
+      window.location.href = returnUrl;
+    }
+  </script>
+</body>
+</html>

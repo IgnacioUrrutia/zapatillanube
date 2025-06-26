@@ -288,7 +288,7 @@
 
   <script type="module">
     import { auth, onAuthStateChanged } from "./js/firebase-config.js";
-    import { db, doc, getDoc, updateDoc } from "./js/firebase-config.js";
+    import { db, collection, query, where, getDocs, doc, updateDoc } from "./js/firebase-config.js";
     import { confirmTransaction, TRANSACTION_STATUS } from "./js/transbank-config.js";
 
     // Función para obtener parámetros de la URL
@@ -337,6 +337,8 @@
 
     // Función principal para procesar el resultado de la transacción
     async function procesarResultadoTransaccion() {
+      console.log("Procesando resultado de transacción Transbank...");
+      
       try {
         // Verificar si el usuario está autenticado
         const user = await new Promise((resolve) => {
@@ -352,6 +354,7 @@
 
         // Obtener token de la URL (token_ws)
         const token = getUrlParameter('token_ws');
+        console.log("Token recibido:", token);
         
         // Si no hay token, manejar posible cancelación o error
         if (!token) {
@@ -359,18 +362,21 @@
           const tbkToken = getUrlParameter('TBK_TOKEN');
           
           if (tbkToken) {
-            // Mostrar mensaje de error de cancelación
+            console.log("Transacción cancelada por el usuario");
             showError('La transacción fue cancelada.');
             return;
           }
           
           // Otro tipo de error
+          console.log("No se recibió token");
           showError('No se recibió información del pago.');
           return;
         }
 
-        // Confirmar la transacción con Transbank
+        // Confirmar la transacción con Transbank usando la función actualizada
+        console.log("Confirmando transacción con Transbank...");
         const transactionResult = await confirmTransaction(token);
+        console.log("Resultado de la transacción:", transactionResult);
         
         // Buscar la compra asociada a esta transacción
         const comprasRef = collection(db, "compras");
@@ -378,6 +384,7 @@
         const querySnapshot = await getDocs(q);
         
         if (querySnapshot.empty) {
+          console.log("No se encontró la compra asociada");
           showError('No se encontró la compra asociada a esta transacción.');
           return;
         }
@@ -385,6 +392,7 @@
         const compraDoc = querySnapshot.docs[0];
         const compraId = compraDoc.id;
         const compra = compraDoc.data();
+        console.log("Compra encontrada:", compraId);
 
         // Actualizar estado de la compra en Firestore según resultado
         let estadoCompra = 'Pendiente';
@@ -394,10 +402,12 @@
         if (transactionResult.response_code === 0) {
           estadoCompra = 'Completado';
           estadoTransaccion = TRANSACTION_STATUS.AUTHORIZED;
+          console.log("Transacción exitosa");
           showSuccess();
         } else {
           estadoCompra = 'Rechazado';
           estadoTransaccion = TRANSACTION_STATUS.FAILED;
+          console.log("Transacción rechazada");
           showError(`Transacción rechazada (código ${transactionResult.response_code})`);
         }
 
@@ -411,6 +421,7 @@
             updateDate: new Date()
           }
         });
+        console.log("Resultado guardado en Firestore");
 
         // Guardar ID de compra en localStorage para la página de resumen
         localStorage.setItem('gengarUltimaCompraId', compraId);
@@ -418,6 +429,7 @@
         // Limpiar carrito si el pago fue exitoso
         if (estadoTransaccion === TRANSACTION_STATUS.AUTHORIZED) {
           localStorage.setItem('gengarMarketCart', JSON.stringify([]));
+          console.log("Carrito limpiado");
         }
 
         // Mostrar detalles de la transacción
@@ -459,6 +471,8 @@
       document.getElementById('cardNumber').textContent = transaction.card_detail?.card_number || 'No disponible';
       document.getElementById('authorizationCode').textContent = transaction.authorization_code || 'No disponible';
       document.getElementById('responseCode').textContent = `${transaction.response_code}`;
+      
+      document.getElementById('detalles-transaccion').style.display = 'block';
     }
 
     // Iniciar el proceso cuando se carga la página
